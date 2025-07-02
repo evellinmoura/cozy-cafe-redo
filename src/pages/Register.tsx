@@ -5,16 +5,24 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 
-const Login = () => {
+const Register = () => {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Simular login
-    localStorage.setItem("user", JSON.stringify({ email, name: "Usuário" }));
+    // Simular cadastro
+    localStorage.setItem("user", JSON.stringify({ 
+      name, 
+      email, 
+      phone,
+      isNewUser: true 
+    }));
     navigate("/");
   };
 
@@ -26,8 +34,8 @@ const Login = () => {
           <div className="text-8xl mb-6">☕</div>
           <h1 className="text-3xl font-bold text-orange-800 mb-2 text-center">Terra&Café</h1>
           <p className="text-orange-700 text-lg text-center">
-            Seu café, no seu tempo<br />
-            do seu jeitinho ☕
+            Cadastre-se e desfrute<br />
+            do melhor café ☕
           </p>
         </div>
 
@@ -35,15 +43,37 @@ const Login = () => {
         <div className="flex items-center justify-center">
           <Card className="w-full max-w-md">
             <CardHeader className="text-center">
+              <div className="flex items-center justify-between mb-4">
+                <Button
+                  variant="ghost"
+                  onClick={() => navigate("/login")}
+                  className="p-2"
+                >
+                  <ArrowLeft className="h-5 w-5" />
+                </Button>
+                <div></div>
+              </div>
               <CardTitle className="text-2xl text-orange-800">
-                Acesse sua conta
+                Criar nova conta
               </CardTitle>
               <CardDescription>
-                Seu café, no seu tempo, do seu jeitinho 🧡
+                Preencha seus dados para se cadastrar
               </CardDescription>
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="name">Nome completo:</Label>
+                  <Input
+                    id="name"
+                    type="text"
+                    placeholder="Seu nome completo"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                  />
+                </div>
+
                 <div className="space-y-2">
                   <Label htmlFor="email">Email:</Label>
                   <Input
@@ -52,6 +82,18 @@ const Login = () => {
                     placeholder="exemplo@email.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="phone">Telefone:</Label>
+                  <Input
+                    id="phone"
+                    type="tel"
+                    placeholder="(11) 99999-9999"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
                     required
                   />
                 </div>
@@ -68,29 +110,20 @@ const Login = () => {
                   />
                 </div>
 
-                <div className="text-right">
-                  <button
-                    type="button"
-                    className="text-sm text-orange-600 hover:text-orange-700"
-                  >
-                    Esqueceu a senha?
-                  </button>
-                </div>
-
                 <Button 
                   type="submit"
                   className="w-full bg-green-500 hover:bg-green-600 text-white"
                 >
-                  Entrar
+                  Cadastrar
                 </Button>
 
                 <div className="text-center">
                   <button
                     type="button"
-                    onClick={() => navigate("/register")}
+                    onClick={() => navigate("/login")}
                     className="text-orange-600 hover:text-orange-700 font-medium"
                   >
-                    Não tem conta? Cadastre-se
+                    Já tem conta? Entre aqui
                   </button>
                 </div>
               </form>
@@ -102,4 +135,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;
