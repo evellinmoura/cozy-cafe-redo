@@ -3,7 +3,8 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, User, History, LogOut } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { DrinkModal } from "@/components/DrinkModal";
 import { Cart } from "@/components/Cart";
 
@@ -64,6 +65,10 @@ const Index = () => {
   const [selectedDrink, setSelectedDrink] = useState<Drink | null>(null);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [showCart, setShowCart] = useState(false);
+  const navigate = useNavigate();
+
+  // Check if user is logged in
+  const user = JSON.parse(localStorage.getItem("user") || "null");
 
   const handleAddToCart = (item: CartItem) => {
     setCart(prev => [...prev, item]);
@@ -74,8 +79,9 @@ const Index = () => {
     return cart.reduce((total, item) => total + item.quantity, 0);
   };
 
-  const getTotalPrice = () => {
-    return cart.reduce((total, item) => total + item.totalPrice, 0);
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    window.location.reload();
   };
 
   return (
@@ -84,20 +90,51 @@ const Index = () => {
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
           <div className="flex items-center gap-4">
-            <h1 className="text-2xl font-bold text-orange-800">☕ Cafeteria</h1>
+            <h1 className="text-2xl font-bold text-orange-800">☕ Terra&Café</h1>
           </div>
-          <Button
-            variant="outline"
-            onClick={() => setShowCart(true)}
-            className="relative"
-          >
-            <ShoppingCart className="h-5 w-5" />
-            {getTotalItems() > 0 && (
-              <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center bg-orange-500">
-                {getTotalItems()}
-              </Badge>
+          <div className="flex items-center gap-3">
+            {user ? (
+              <>
+                <Button
+                  variant="outline"
+                  onClick={() => navigate("/history")}
+                  className="flex items-center gap-2"
+                >
+                  <History className="h-4 w-4" />
+                  Histórico
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={handleLogout}
+                  className="flex items-center gap-2"
+                >
+                  <LogOut className="h-4 w-4" />
+                  Sair
+                </Button>
+              </>
+            ) : (
+              <Button
+                variant="outline"
+                onClick={() => navigate("/login")}
+                className="flex items-center gap-2"
+              >
+                <User className="h-4 w-4" />
+                Entrar
+              </Button>
             )}
-          </Button>
+            <Button
+              variant="outline"
+              onClick={() => setShowCart(true)}
+              className="relative"
+            >
+              <ShoppingCart className="h-5 w-5" />
+              {getTotalItems() > 0 && (
+                <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center bg-orange-500">
+                  {getTotalItems()}
+                </Badge>
+              )}
+            </Button>
+          </div>
         </div>
       </header>
 
