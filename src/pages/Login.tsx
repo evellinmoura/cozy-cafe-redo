@@ -15,6 +15,8 @@ const Login = () => {
     e.preventDefault();
     // Simular login
     localStorage.setItem("user", JSON.stringify({ email, name: "Usuário" }));
+    
+    // Redirect back to home page where user can continue with their order
     navigate("/");
   };
 
@@ -39,7 +41,7 @@ const Login = () => {
                 Acesse sua conta
               </CardTitle>
               <CardDescription>
-                Seu café, no seu tempo, do seu jeitinho 🧡
+                Entre para finalizar seu pedido ☕
               </CardDescription>
             </CardHeader>
             <CardContent>

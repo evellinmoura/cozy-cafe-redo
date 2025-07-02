@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Plus, Minus, Trash2 } from "lucide-react";
 import { PaymentModal } from "./PaymentModal";
+import { useNavigate } from "react-router-dom";
 
 interface Drink {
   id: string;
@@ -31,6 +32,10 @@ interface CartProps {
 
 export const Cart = ({ items, isOpen, onClose, onUpdateCart }: CartProps) => {
   const [showPayment, setShowPayment] = useState(false);
+  const navigate = useNavigate();
+
+  // Check if user is logged in
+  const user = JSON.parse(localStorage.getItem("user") || "null");
 
   const updateQuantity = (index: number, newQuantity: number) => {
     if (newQuantity <= 0) {
@@ -59,9 +64,32 @@ export const Cart = ({ items, isOpen, onClose, onUpdateCart }: CartProps) => {
   };
 
   const handlePaymentComplete = () => {
-    alert("Pedido realizado com sucesso! Obrigado pela preferência!");
+    // Save order to history
+    const order = {
+      id: Date.now().toString(),
+      items: items,
+      total: getTotalPrice(),
+      date: new Date().toISOString(),
+      status: "Concluído"
+    };
+    
+    const existingOrders = JSON.parse(localStorage.getItem("orderHistory") || "[]");
+    localStorage.setItem("orderHistory", JSON.stringify([order, ...existingOrders]));
+    
+    // Clear cart and show confirmation
     onUpdateCart([]);
     setShowPayment(false);
+    navigate("/payment-confirmation");
+  };
+
+  const handleCheckout = () => {
+    if (!user) {
+      // Close cart and redirect to login
+      onClose();
+      navigate("/login");
+    } else {
+      setShowPayment(true);
+    }
   };
 
   if (items.length === 0) {
@@ -178,7 +206,7 @@ export const Cart = ({ items, isOpen, onClose, onUpdateCart }: CartProps) => {
               </Button>
               <Button 
                 className="flex-1 bg-orange-500 hover:bg-orange-600"
-                onClick={() => setShowPayment(true)}
+                onClick={handleCheckout}
               >
                 Fechar pedido
               </Button>
