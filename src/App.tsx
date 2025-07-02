@@ -9,6 +9,11 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import History from "./pages/History";
 import PaymentConfirmation from "./pages/PaymentConfirmation";
+import Kitchen from "./pages/Kitchen";
+import KitchenDashboard from "./pages/KitchenDashboard";
+import KitchenIngredients from "./pages/KitchenIngredients";
+import KitchenDiscounts from "./pages/KitchenDiscounts";
+import KitchenOrdersHistory from "./pages/KitchenOrdersHistory";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,6 +30,14 @@ const App = () => (
           <Route path="/register" element={<Register />} />
           <Route path="/history" element={<History />} />
           <Route path="/payment-confirmation" element={<PaymentConfirmation />} />
+          
+          {/* Kitchen Routes */}
+          <Route path="/kitchen" element={<Kitchen />} />
+          <Route path="/kitchen/dashboard" element={<KitchenDashboard />} />
+          <Route path="/kitchen/ingredients" element={<KitchenIngredients />} />
+          <Route path="/kitchen/discounts" element={<KitchenDiscounts />} />
+          <Route path="/kitchen/orders-history" element={<KitchenOrdersHistory />} />
+          
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

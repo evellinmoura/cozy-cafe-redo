@@ -1,9 +1,8 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ShoppingCart, User, History, LogOut } from "lucide-react";
+import { ShoppingCart, User, History, LogOut, ChefHat } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { DrinkModal } from "@/components/DrinkModal";
 import { Cart } from "@/components/Cart";
@@ -92,35 +91,48 @@ const Index = () => {
           <div className="flex items-center gap-4">
             <h1 className="text-2xl font-bold text-orange-800">☕ Terra&Café</h1>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             {user ? (
-              <>
+              <div className="flex items-center gap-4">
                 <Button
                   variant="outline"
                   onClick={() => navigate("/history")}
-                  className="flex items-center gap-2"
                 >
-                  <History className="h-4 w-4" />
+                  <History className="h-4 w-4 mr-2" />
                   Histórico
                 </Button>
                 <Button
                   variant="outline"
-                  onClick={handleLogout}
-                  className="flex items-center gap-2"
+                  onClick={() => navigate("/kitchen")}
+                  className="border-orange-300 text-orange-700 hover:bg-orange-100"
                 >
-                  <LogOut className="h-4 w-4" />
+                  <ChefHat className="h-4 w-4 mr-2" />
+                  Cozinha
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={handleLogout}
+                >
                   Sair
                 </Button>
-              </>
+              </div>
             ) : (
-              <Button
-                variant="outline"
-                onClick={() => navigate("/login")}
-                className="flex items-center gap-2"
-              >
-                <User className="h-4 w-4" />
-                Entrar
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => navigate("/kitchen")}
+                  className="border-orange-300 text-orange-700 hover:bg-orange-100"
+                >
+                  <ChefHat className="h-4 w-4 mr-2" />
+                  Cozinha
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => navigate("/login")}
+                >
+                  Entrar
+                </Button>
+              </div>
             )}
             <Button
               variant="outline"
