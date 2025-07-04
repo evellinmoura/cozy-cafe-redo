@@ -15,8 +15,8 @@ interface PaymentModalProps {
 
 const paymentMethods = [
   { id: "pix", name: "Pix", icon: Smartphone, discount: "5% de desconto" },
-  { id: "debit", name: "Dinheiro", icon: DollarSign, discount: "10% de desconto" },
-  { id: "credit", name: "Cartão de crédito", icon: CreditCard, discount: "3 vezes" },
+  { id: "debit", name: "Dinheiro", icon: DollarSign },
+  { id: "credit", name: "Cartão de crédito", icon: CreditCard },
   { id: "debitCard", name: "Cartão de débito", icon: CreditCard, discount: "" },
   { id: "voucher", name: "Fidelidade", icon: Gift, discount: "10% de desconto" }
 ];
