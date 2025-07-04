@@ -88,8 +88,12 @@ const Index = () => {
       {/* Header */}
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-4">
+          {/*<div className="flex items-center gap-4">
             <h1 className="text-2xl font-bold text-orange-800">☕ Terra&Café</h1>
+          </div>*/}
+          <div className="logo-colorido">
+            <img src="public\terracafe_colorido.svg"  width="50" height="50"></img>
+            <h1 className="text-2xl font-bold text-orange-800">Terra&Café</h1>
           </div>
           <div className="flex items-center gap-4">
             {user ? (
@@ -152,16 +156,24 @@ const Index = () => {
 
       {/* Hero Section */}
       <section className="max-w-6xl mx-auto px-4 py-8">
-        <div className="bg-gradient-to-r from-orange-200 to-yellow-200 rounded-lg p-8 mb-8 text-center">
-          <div className="text-6xl mb-4">👩🏽‍🍳</div>
-          <h2 className="text-3xl font-bold text-orange-800 mb-2">
-            Seu café, no seu tempo
-          </h2>
-          <p className="text-orange-700 text-lg">
-            do seu jeitinho ☕
-          </p>
-        </div>
-      </section>
+  <div className="relative">
+    <img 
+      src="/public/a-happy-black-young-woman-on-a-coffee-shop 2.png" 
+      alt="Imagem de café" 
+      className="w-full h-auto"
+    />
+    <div className="absolute bottom-0 left-0 p-4 text-left text-white">
+      <h2 className="text-3xl font-bold text-orange-800 mb-2">
+        Seu café, no seu tempo
+      </h2>
+      <p className="text-orange-700 text-lg">
+        do seu jeitinho 
+      </p>
+    </div>
+  </div>
+</section>
+
+
 
       {/* Menu Section */}
       <section className="max-w-6xl mx-auto px-4 pb-8">

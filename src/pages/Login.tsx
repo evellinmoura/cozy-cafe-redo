@@ -25,7 +25,9 @@ const Login = () => {
       <div className="w-full max-w-4xl grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Lado esquerdo - Imagem/Branding */}
         <div className="hidden lg:flex flex-col justify-center items-center bg-gradient-to-br from-orange-200 to-yellow-200 rounded-lg p-8">
-          <div className="text-8xl mb-6">☕</div>
+          <div className="logo-colorido">
+            <img src="public\terracafe_colorido.svg"  width="150" height="100"></img>
+          </div>
           <h1 className="text-3xl font-bold text-orange-800 mb-2 text-center">Terra&Café</h1>
           <p className="text-orange-700 text-lg text-center">
             Seu café, no seu tempo<br />
@@ -78,7 +80,7 @@ const Login = () => {
                     Esqueceu a senha?
                   </button>
                 </div>
-
+                
                 <Button 
                   type="submit"
                   className="w-full bg-green-500 hover:bg-green-600 text-white"
