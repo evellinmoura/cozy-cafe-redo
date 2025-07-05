@@ -15,6 +15,7 @@ import KitchenIngredients from "./pages/KitchenIngredients";
 import KitchenDiscounts from "./pages/KitchenDiscounts";
 import KitchenOrdersHistory from "./pages/KitchenOrdersHistory";
 import NotFound from "./pages/NotFound";
+import KitchenLogin from "./pages/KitchenLogin";
 
 const queryClient = new QueryClient();
 
@@ -30,8 +31,9 @@ const App = () => (
           <Route path="/register" element={<Register />} />
           <Route path="/history" element={<History />} />
           <Route path="/payment-confirmation" element={<PaymentConfirmation />} />
-          
+
           {/* Kitchen Routes */}
+          <Route path="/kitchenlogin" element={<KitchenLogin />} />
           <Route path="/kitchen" element={<Kitchen />} />
           <Route path="/kitchen/dashboard" element={<KitchenDashboard />} />
           <Route path="/kitchen/ingredients" element={<KitchenIngredients />} />

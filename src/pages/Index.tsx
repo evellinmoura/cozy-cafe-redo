@@ -107,14 +107,6 @@ const Index = () => {
                 </Button>
                 <Button
                   variant="outline"
-                  onClick={() => navigate("/kitchen")}
-                  className="border-orange-300 text-orange-700 hover:bg-orange-100"
-                >
-                  <ChefHat className="h-4 w-4 mr-2" />
-                  Cozinha
-                </Button>
-                <Button
-                  variant="outline"
                   onClick={handleLogout}
                 >
                   Sair
@@ -122,14 +114,6 @@ const Index = () => {
               </div>
             ) : (
               <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  onClick={() => navigate("/kitchen")}
-                  className="border-orange-300 text-orange-700 hover:bg-orange-100"
-                >
-                  <ChefHat className="h-4 w-4 mr-2" />
-                  Cozinha
-                </Button>
                 <Button
                   variant="outline"
                   onClick={() => navigate("/login")}

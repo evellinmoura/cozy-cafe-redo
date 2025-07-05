@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, ChefHat } from "lucide-react";
 
-const Login = () => {
+const KitchenLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -17,22 +17,20 @@ const Login = () => {
     // Simular login
     localStorage.setItem("user", JSON.stringify({ email, name: "Usuário" }));
     
-    // Redirect back to home page where user can continue with their order
-    navigate("/");
+    navigate("/kitchen");
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-orange-100 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-b from-red-50 to-red-100 flex items-center justify-center p-4">
       <div className="w-full max-w-4xl grid grid-cols-1 lg:grid-cols-2 gap-8">
       {/* Lado esquerdo - Imagem/Branding */}
-        <div className="hidden lg:flex flex-col justify-center items-center bg-gradient-to-br from-orange-200 to-yellow-200 rounded-lg p-8">
+        <div className="hidden lg:flex flex-col justify-center items-center bg-gradient-to-br from-red-300 to-orange-300 rounded-lg p-8">
           <div className="logo-colorido">
             <img src="public\terracafe_colorido.svg"  width="150" height="100"></img>
           </div>
           <h1 className="text-3xl font-bold text-orange-800 mb-2 text-center">Terra&Café</h1>
           <p className="text-orange-700 text-lg text-center">
-            Seu café, no seu tempo<br />
-            do seu jeitinho ☕
+            Sistema de Gerenciamento
           </p>
       </div>
 
@@ -43,19 +41,19 @@ const Login = () => {
             <div className="flex items-center justify-between mb-4">
               <Button
                 variant="ghost"
-                onClick={() => navigate("/")}
+                onClick={() => navigate("/login")}
                 className="p-2"
               >
                 <ArrowLeft className="h-5 w-5" />
-                Tela inicial
+                Login de Cliente
               </Button>
               <div></div>
             </div>
             <CardTitle className="text-2xl text-orange-800">
-              Acesse sua conta
+              Acesso da Cozinha
             </CardTitle>
             <CardDescription>
-              Entre para finalizar seu pedido ☕
+              Entre para acessar o sistema da cozinha
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -95,30 +93,10 @@ const Login = () => {
               
               <Button 
                 type="submit"
-                className="w-full bg-green-500 hover:bg-green-600 text-white"
+                className="w-full bg-orange-500 hover:bg-orange-600 text-white"
               >
                 Entrar
               </Button>
-
-              <div className="text-center">
-                <button
-                  type="button"
-                  onClick={() => navigate("/register")}
-                  className="text-orange-600 hover:text-orange-700 font-medium"
-                >
-                  Não tem conta? Cadastre-se
-                </button>
-              </div>
-              <div className="text-center">
-                <Button
-                  variant="outline"
-                  onClick={() => navigate("/kitchenlogin")}
-                  className="w-full border-orange-300 text-orange-700 hover:bg-orange-100"
-                >
-                  <ChefHat className="h-4 w-4 mr-2" />
-                  Entrar como cozinha
-                </Button>
-              </div>
             </form>
           </CardContent>
         </Card>
@@ -128,4 +106,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default KitchenLogin;

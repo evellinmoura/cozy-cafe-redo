@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChefHat, Package, Users, Percent, History, Settings } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { LogOut } from "lucide-react";
 
 const Kitchen = () => {
   const navigate = useNavigate();
@@ -79,10 +80,11 @@ const Kitchen = () => {
         <div className="text-center">
           <Button
             variant="outline"
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/kitchenlogin")}
             className="border-orange-300 text-orange-700 hover:bg-orange-100"
           >
-            Voltar ao Menu Principal
+            <LogOut className="h-4 w-4 mr-2" />
+            Sair
           </Button>
         </div>
       </div>
