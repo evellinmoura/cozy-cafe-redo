@@ -22,18 +22,8 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen w-full min-w-screen bg-gradient-to-b from-orange-50 to-orange-100 grid place-content-center p-4">
-      <div className="pb-4 pt-4 justify-start col-span-3">
-        <Button
-          variant="outline"
-          onClick={() => navigate("/")}
-          className="border-orange-300 text-orange-700 hover:bg-orange-100"
-        >
-          <ArrowLeft /*className="h-4 w-4 mr-2" */ /> 
-          Voltar
-        </Button>
-      </div>
-      <div className="w-full max-w-4x1 grid grid-cols-1 lg:grid-cols-2 gap-8 justify-content-center col-span-3">
+    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-orange-100 flex items-center justify-center p-4">
+      <div className="w-full max-w-4xl grid grid-cols-1 lg:grid-cols-2 gap-8">
       {/* Lado esquerdo - Imagem/Branding */}
         <div className="hidden lg:flex flex-col justify-center items-center bg-gradient-to-br from-orange-200 to-yellow-200 rounded-lg p-8">
           <div className="logo-colorido">
@@ -50,6 +40,17 @@ const Login = () => {
       <div className="flex items-center justify-center">
         <Card className="w-full max-w-md">
           <CardHeader className="text-center">
+            <div className="flex items-center justify-between mb-4">
+              <Button
+                variant="ghost"
+                onClick={() => navigate("/")}
+                className="p-2"
+              >
+                <ArrowLeft className="h-5 w-5" />
+                Tela inicial
+              </Button>
+              <div></div>
+            </div>
             <CardTitle className="text-2xl text-orange-800">
               Acesse sua conta
             </CardTitle>
