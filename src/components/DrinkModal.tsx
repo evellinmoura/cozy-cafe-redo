@@ -15,10 +15,15 @@ interface Drink {
   description: string;
 }
 
+interface Customizations {
+  name: string;
+  price: number;
+}
+
 interface CartItem {
   drink: Drink;
   quantity: number;
-  customizations: string[];
+  customizations: Customizations[];
   totalPrice: number;
 }
 
@@ -27,20 +32,22 @@ interface DrinkModalProps {
   isOpen: boolean;
   onClose: () => void;
   onAddToCart: (item: CartItem) => void;
+  initialCustomizations?: Customizations[];
+  initialQuantity?: number;
+  shouldReturnToCart?: boolean;
 }
 
-const customizations = [
+const customizations: Customizations[] = [
   { name: "Leite de amêndoas", price: 3.50 },
   { name: "Leite de coco", price: 3.00 },
   { name: "Xarope de Caramelo", price: 3.50 },
   { name: "Chocolate ( para polvilhar )", price: 2.00 }
 ];
 
-export const DrinkModal = ({ drink, isOpen, onClose, onAddToCart }: DrinkModalProps) => {
-  const [quantity, setQuantity] = useState(1);
-  const [selectedCustomizations, setSelectedCustomizations] = useState<string[]>([]);
-
-  const handleCustomizationChange = (customization: string, checked: boolean) => {
+export const DrinkModal = ({ drink, isOpen, onClose, onAddToCart, initialCustomizations, initialQuantity, shouldReturnToCart }: DrinkModalProps) => {
+  const [selectedCustomizations, setSelectedCustomizations] = useState<Customizations[]>(initialCustomizations || []);
+  const [quantity, setQuantity] = useState<number>(initialQuantity || 1);
+  const handleCustomizationChange = (customization: Customizations, checked: boolean) => {
     if (checked) {
       setSelectedCustomizations(prev => [...prev, customization]);
     } else {
@@ -55,7 +62,7 @@ export const DrinkModal = ({ drink, isOpen, onClose, onAddToCart }: DrinkModalPr
   const getTotalPrice = () => {
     const basePrice = drink.price * quantity;
     const customizationPrice = selectedCustomizations.reduce((total, custom) => {
-      return total + getCustomizationPrice(custom);
+      return total + getCustomizationPrice(custom.name);
     }, 0) * quantity;
     return basePrice + customizationPrice;
   };
@@ -68,6 +75,13 @@ export const DrinkModal = ({ drink, isOpen, onClose, onAddToCart }: DrinkModalPr
       totalPrice: getTotalPrice()
     };
     onAddToCart(item);
+    onClose();
+    if (shouldReturnToCart) {
+      setTimeout(() => {
+        const event = new CustomEvent("openCart");
+        window.dispatchEvent(event);
+      }, 100);
+    }
   };
 
   return (
@@ -97,8 +111,8 @@ export const DrinkModal = ({ drink, isOpen, onClose, onAddToCart }: DrinkModalPr
                     <input
                       type="checkbox"
                       id={custom.name}
-                      checked={selectedCustomizations.includes(custom.name)}
-                      onChange={(e) => handleCustomizationChange(custom.name, e.target.checked)}
+                      checked={selectedCustomizations.includes(custom)}
+                      onChange={(e) => handleCustomizationChange(custom, e.target.checked)}
                       className="rounded border-gray-300"
                     />
                     <Label htmlFor={custom.name} className="text-sm">

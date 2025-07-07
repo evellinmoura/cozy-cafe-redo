@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Plus, Minus, Trash2 } from "lucide-react";
+import { Plus, Minus, Trash2, Pencil } from "lucide-react";
 import { PaymentModal } from "./PaymentModal";
 import { useNavigate } from "react-router-dom";
 
@@ -16,10 +16,15 @@ interface Drink {
   description: string;
 }
 
+interface Customizations {
+  name: string;
+  price: number;
+}
+
 interface CartItem {
   drink: Drink;
   quantity: number;
-  customizations: string[];
+  customizations: Customizations[];
   totalPrice: number;
 }
 
@@ -28,9 +33,10 @@ interface CartProps {
   isOpen: boolean;
   onClose: () => void;
   onUpdateCart: (items: CartItem[]) => void;
+  onEditItem: (item: CartItem, index: number) => void;
 }
 
-export const Cart = ({ items, isOpen, onClose, onUpdateCart }: CartProps) => {
+export const Cart = ({ items, isOpen, onClose, onUpdateCart, onEditItem }: CartProps) => {
   const [showPayment, setShowPayment] = useState(false);
   const navigate = useNavigate();
 
@@ -57,6 +63,11 @@ export const Cart = ({ items, isOpen, onClose, onUpdateCart }: CartProps) => {
   const removeItem = (index: number) => {
     const updatedItems = items.filter((_, i) => i !== index);
     onUpdateCart(updatedItems);
+  };
+
+  const editItem = (index: number) => {
+    const item = items[index];
+    onEditItem(item, index);
   };
 
   const getTotalPrice = () => {
@@ -111,37 +122,37 @@ export const Cart = ({ items, isOpen, onClose, onUpdateCart }: CartProps) => {
   return (
     <>
       <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="max-w-lg mx-auto max-h-[80vh] overflow-y-auto">
+        <DialogContent className="mx-auto max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-center">O que você está levando 🛒</DialogTitle>
           </DialogHeader>
           
           <div className="space-y-4">
             {/* Header da tabela */}
-            <div className="grid grid-cols-12 gap-2 text-sm font-medium text-gray-600 border-b pb-2">
-              <div className="col-span-4">Item</div>
-              <div className="col-span-3">Adicionais</div>
-              <div className="col-span-2">Quantidade</div>
-              <div className="col-span-2">Preço</div>
-              <div className="col-span-1"></div>
+            <div className="grid grid-cols-13 gap-2 text-sm font-medium text-gray-600 border-b pb-2">
+              <div className="col-span-4 col-start-1">Item</div>
+              <div className="col-span-3 col-start-5">Adicionais</div>
+              <div className="col-span-2 col-start-8">Quantidade</div>
+              <div className="col-span-2 col-start-10">Preço</div>
+              <div className="col-span-2 col-start-12"></div>
             </div>
 
             {/* Items do carrinho */}
             {items.map((item, index) => (
-              <div key={index} className="grid grid-cols-12 gap-2 items-start py-3 border-b">
-                <div className="col-span-4 flex items-center gap-2">
+              <div key={index} className="grid grid-cols-13 gap-2 items-start py-3 border-b">
+                <div className="col-span-4 col-start-1 flex items-center gap-2">
                   <span className="text-2xl">{item.drink.image}</span>
                   <div>
                     <p className="font-medium text-sm">{item.drink.name}</p>
                   </div>
                 </div>
                 
-                <div className="col-span-3">
+                <div className="col-span-3 col-start-5">
                   {item.customizations.length > 0 ? (
                     <div className="space-y-1">
                       {item.customizations.map((custom, i) => (
                         <Badge key={i} variant="secondary" className="text-xs">
-                          {custom}
+                          {custom.name} - R$ {custom.price.toFixed(2)}
                         </Badge>
                       ))}
                     </div>
@@ -149,8 +160,8 @@ export const Cart = ({ items, isOpen, onClose, onUpdateCart }: CartProps) => {
                     <span className="text-xs text-gray-400">Sem adicionais</span>
                   )}
                 </div>
-                
-                <div className="col-span-2 flex items-center gap-1">
+
+                <div className="col-span-2 col-start-8 flex items-center gap-1 whitespace-nowrap">
                   <Button
                     variant="outline"
                     size="icon"
@@ -169,12 +180,12 @@ export const Cart = ({ items, isOpen, onClose, onUpdateCart }: CartProps) => {
                     <Plus className="h-3 w-3" />
                   </Button>
                 </div>
-                
-                <div className="col-span-2 text-sm font-medium">
+
+                <div className="col-span-2 col-start-10 text-sm font-medium whitespace-nowrap">
                   R$ {item.totalPrice.toFixed(2)}
                 </div>
                 
-                <div className="col-span-1">
+                <div className="col-span-1 col-start-12 whitespace-nowrap">
                   <Button
                     variant="ghost"
                     size="icon"
@@ -182,6 +193,16 @@ export const Cart = ({ items, isOpen, onClose, onUpdateCart }: CartProps) => {
                     onClick={() => removeItem(index)}
                   >
                     <Trash2 className="h-3 w-3" />
+                  </Button>
+                </div>
+                <div className="col-span-1 col-start-13 whitespace-nowrap">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-6 w-6 text-red-500 hover:text-red-700"
+                    onClick={() => editItem(index)}
+                  >
+                    <Pencil className="h-3 w-3" />
                   </Button>
                 </div>
               </div>

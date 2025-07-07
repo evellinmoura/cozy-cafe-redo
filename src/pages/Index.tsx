@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -6,6 +6,7 @@ import { ShoppingCart, User, History, LogOut, ChefHat } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { DrinkModal } from "@/components/DrinkModal";
 import { Cart } from "@/components/Cart";
+import { set } from "date-fns";
 
 interface Drink {
   id: string;
@@ -15,10 +16,15 @@ interface Drink {
   description: string;
 }
 
+interface Customizations {
+  name: string;
+  price: number;
+}
+
 interface CartItem {
   drink: Drink;
   quantity: number;
-  customizations: string[];
+  customizations: Customizations[];
   totalPrice: number;
 }
 
@@ -64,13 +70,40 @@ const Index = () => {
   const [selectedDrink, setSelectedDrink] = useState<Drink | null>(null);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [showCart, setShowCart] = useState(false);
+  const [editingItemIndex, setEditingItemIndex] = useState<number | null>(null);
+  const [initialCustomizations, setInitialCustomizations] = useState<Customizations[]>([]);
+  const [initialQuantity, setInitialQuantity] = useState<number>(1);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleOpenCart = () => setShowCart(true);
+    window.addEventListener("open-cart", handleOpenCart);
+    return () => {
+      window.removeEventListener("open-cart", handleOpenCart);
+    };
+  }, []);
 
   // Check if user is logged in
   const user = JSON.parse(localStorage.getItem("user") || "null");
 
+  const handleEditItem = (item: CartItem, index: number) => {
+    setSelectedDrink(item.drink);
+    setInitialCustomizations(item.customizations);
+    setInitialQuantity(item.quantity);
+    setEditingItemIndex(index);
+    setShowCart(false);
+  }
+
   const handleAddToCart = (item: CartItem) => {
-    setCart(prev => [...prev, item]);
+    if (editingItemIndex !== null) {
+      const newCart = [...cart];
+      newCart[editingItemIndex] = item;
+      setCart(newCart);
+      setEditingItemIndex(null);
+      setShowCart(true);
+    } else {
+      setCart((prevCart) => [...prevCart, item]);
+    }
     setSelectedDrink(null);
   };
 
@@ -84,14 +117,14 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-orange-100">
+    <div className="min-h-screen bg-[#fff9f3]">
       {/* Header */}
       <header className="bg-white shadow-sm border-b">
         <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
           {/*<div className="flex items-center gap-4">
             <h1 className="text-2xl font-bold text-orange-800">☕ Terra&Café</h1>
           </div>*/}
-          <div className="logo-colorido">
+          <div className="logo-colorido flex items-center gap-3">
             <img src="public\terracafe_colorido.svg"  width="50" height="50"></img>
             <h1 className="text-2xl font-bold text-orange-800">Terra&Café</h1>
           </div>
@@ -178,7 +211,13 @@ const Index = () => {
               <CardContent>
                 <Button 
                   className="w-full bg-orange-500 hover:bg-orange-600"
-                  onClick={() => setSelectedDrink(drink)}
+                  onClick={() => {
+                    setSelectedDrink(drink);
+                    setInitialCustomizations([]);
+                    setInitialQuantity(1);
+                    setEditingItemIndex(null);
+                    setShowCart(false);
+                  }}
                 >
                   Escolher
                 </Button>
@@ -193,8 +232,14 @@ const Index = () => {
         <DrinkModal
           drink={selectedDrink}
           isOpen={!!selectedDrink}
-          onClose={() => setSelectedDrink(null)}
+          onClose={() => {
+            setSelectedDrink(null);
+            setEditingItemIndex(null);
+          }}
           onAddToCart={handleAddToCart}
+          initialCustomizations={initialCustomizations}
+          initialQuantity={initialQuantity}
+          shouldReturnToCart={editingItemIndex !== null}
         />
       )}
 
@@ -204,6 +249,7 @@ const Index = () => {
           isOpen={showCart}
           onClose={() => setShowCart(false)}
           onUpdateCart={setCart}
+          onEditItem={handleEditItem}
         />
       )}
     </div>
