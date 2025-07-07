@@ -121,7 +121,7 @@ const Index = () => {
     <div className="min-h-screen bg-[#fff9f3]">
       {/* Header */}
       <header className="bg-[#f8e0b3] shadow-md">
-        <div className="max-w-6xl mx-auto px-4 py-2 flex justify-between items-center">
+        <div className="max-w-6xl mx-auto px-2 sm:px-4 py-2 flex justify-between items-center">
           {/*<div className="flex items-center gap-4">
             <h1 className="text-2xl font-bold text-orange-800">☕ Terra&Café</h1>
           </div>*/}
@@ -165,13 +165,12 @@ const Index = () => {
                 </DropdownMenu>
               </div>
             ) : (
-              <div className="flex gap-2 text-[#754416]">
+              <div className="flex gap-1">
                 <Button
-                  className="rounded-full bg-[#d7dfaf]"
-                  variant="outline"
+                  className="rounded-full hover:bg-[#e2ce87] text-[#754416] bg-[#d7dfaf]"
                   onClick={() => navigate("/login")}
                 >
-                  <CircleUserRound className="h-4 w-4 mr-2" />
+                  <CircleUserRound className="h-4 w-4 mr-2"/>
                   Entrar
                 </Button>
               </div>
@@ -203,7 +202,6 @@ const Index = () => {
         <h3 className="text-2xl font-bold text-orange-800 mb-6">
           Selecione a base da sua bebida ☕
         </h3>
-        
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {drinks.map((drink) => (
             <Card key={drink.id} className="hover:shadow-lg transition-shadow cursor-pointer bg-white">
