@@ -119,21 +119,23 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-[#fff9f3]">
-      {/* Header */}
-      <header className="hidden lg:block bg-[#f8e0b3] shadow-md">
+      {/* Desktop header */}
+      <header className="hidden lg:block bg-[#fff8e0]">
         <div className="max-w-6xl mx-auto px-2 sm:px-4 py-2 flex justify-between items-center">
           {/*<div className="flex items-center gap-4">
             <h1 className="text-2xl font-bold text-orange-800">☕ Terra&Café</h1>
           </div>*/}
           <div className="logo-colorido flex items-center gap-3">
-            <img src="public\terracafe_colorido.svg"  width="50" height="50"></img>
-            <h1 className="text-2xl font-bold font-serif text-[#754416]">Terra&Café</h1>
+            <img 
+            src="public/logo-bege.png"  
+            className="h-12"
+            alt="Logo Terra&Café" />
           </div>
           <div className="flex items-center gap-2">
             <Button
               variant="outline"
               onClick={() => setShowCart(true)}
-              className="hover:bg-[#e2ce87] relative rounded-full border-transparent bg-transparent"
+              className="hover:bg-[#e2ce87] relative rounded-full border-transparent bg-transparent text-[#754416]"
             >
               <ShoppingCart className="h-5 w-5 text-[#754416]" />
               {getTotalItems() > 0 && (
@@ -141,6 +143,7 @@ const Index = () => {
                   {getTotalItems()}
                 </Badge>
               )}
+              Carrinho
             </Button>
             {user ? (
               <div className="flex items-center gap-4 text-[#754416]">
@@ -148,7 +151,7 @@ const Index = () => {
                   <DropdownMenuTrigger>
                     <Button className="hover:bg-[#e2ce87] rounded-full bg-[#d7dfaf] text-[#754416]">
                       <User className="h-4 w-4 mr-2" />
-                      {user.name}
+                      Olá, {user.name} 💛
                       <ChevronDown className="ml-2 h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>
@@ -179,15 +182,14 @@ const Index = () => {
         </div>
       </header>
 
-      <header className="block lg:hidden bg-[#f8e0b3] shadow-md">
+      {/* Mobile Header */}
+      <header className="block lg:hidden bg-[#fff8e0]">
           <div className="w-full py-2 flex align-center justify-evenly items-center">
             <div>
-              <img src="public\terracafe_colorido.svg"  width="50" height="50"></img>
-            </div>
-            <div>
-              <h3 className="text-2xl font-bold font-serif text-[#754416]">
-                Terra&Café
-              </h3>
+              <img 
+              src="public\logo-bege.png"
+              className="h-12"
+              ></img>
             </div>
             <div className="flex items-center">
               <Button
@@ -204,15 +206,15 @@ const Index = () => {
               </Button>
               <div>
                 {user ? (
-                  <div className="flex items-center gap-4 text-[#754416]">
+                  <div className="flex items-center text-[#754416]">
                     <DropdownMenu>
                       <DropdownMenuTrigger>
                         <Button className="hover:bg-[#e2ce87] rounded-full bg-[#d7dfaf] text-[#754416]">
-                          {user.name}
+                          Olá, {user.name} 💛
                           <ChevronDown className="ml-2 h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-48 bg-[#d7dfaf] text-[#754416] rounded-sm">
+                      <DropdownMenuContent align="end" className="w-40 bg-[#d7dfaf] text-[#754416] rounded-xl">
                         <DropdownMenuItem className="hover:bg-[#e2ce87]" onClick={() => navigate("/history")}>
                           <History className="h-4 w-4 mr-2" />
                           Histórico
