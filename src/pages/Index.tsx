@@ -120,7 +120,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-[#fff9f3]">
       {/* Header */}
-      <header className="bg-[#f8e0b3] shadow-md">
+      <header className="hidden lg:block bg-[#f8e0b3] shadow-md">
         <div className="max-w-6xl mx-auto px-2 sm:px-4 py-2 flex justify-between items-center">
           {/*<div className="flex items-center gap-4">
             <h1 className="text-2xl font-bold text-orange-800">☕ Terra&Café</h1>
@@ -179,17 +179,85 @@ const Index = () => {
         </div>
       </header>
 
+      <header className="block lg:hidden bg-[#f8e0b3] shadow-md">
+          <div className="w-full py-2 flex align-center justify-evenly items-center">
+            <div>
+              <img src="public\terracafe_colorido.svg"  width="50" height="50"></img>
+            </div>
+            <div>
+              <h3 className="text-2xl font-bold font-serif text-[#754416]">
+                Terra&Café
+              </h3>
+            </div>
+            <div className="flex items-center">
+              <Button
+                variant="outline"
+                onClick={() => setShowCart(true)}
+                className="hover:bg-[#e2ce87] relative rounded-full border-transparent bg-transparent"
+              >
+                <ShoppingCart className="h-5 w-5 text-[#754416]" />
+                {getTotalItems() > 0 && (
+                  <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center bg-orange-500">
+                    {getTotalItems()}
+                  </Badge>
+                )}
+              </Button>
+              <div>
+                {user ? (
+                  <div className="flex items-center gap-4 text-[#754416]">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger>
+                        <Button className="hover:bg-[#e2ce87] rounded-full bg-[#d7dfaf] text-[#754416]">
+                          {user.name}
+                          <ChevronDown className="ml-2 h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-48 bg-[#d7dfaf] text-[#754416] rounded-sm">
+                        <DropdownMenuItem className="hover:bg-[#e2ce87]" onClick={() => navigate("/history")}>
+                          <History className="h-4 w-4 mr-2" />
+                          Histórico
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="hover:bg-[#e2ce87]" onClick={() => handleLogout()}>
+                          <LogOut className="h-4 w-4 mr-2" />
+                          Sair
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                ) : (
+                  <div className="flex">
+                    <Button
+                      className="rounded-full hover:bg-[#e2ce87] text-[#754416] bg-[#d7dfaf]"
+                      onClick={() => navigate("/login")}
+                    >
+                      <CircleUserRound className="h-3 w-3 mr-2"/>
+                      Entrar
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+      </header>
+
       {/* Hero Section */}
       <section className="max-w-6xl mx-auto px-4 py-8">
-        <div className="relative">
-          <img 
-            src="/public/a-happy-black-young-woman-on-a-coffee-shop 2.png" 
-            alt="Imagem de café" 
-            className="w-full h-auto"
-          />
-          <div className="bg-[#fff9f3] m-6 rounded-lg absolute bottom-0 left-0 p-3 text-left text-[#754416]">
+        <div className="relative sm:rounded-lg sm:p-2">
+          <div className="bg-[#fffbe0] rounded-lg lg:bg-transparent">
+            <img 
+              src="/public/a-happy-black-young-woman-on-a-coffee-shop 2.png" 
+              alt="Imagem de café" 
+              className="w-full h-auto"
+            />
+            <div className="block lg:hidden p-4 rounded-lg text-left text-[#754416]">
             <h2 className="text-3xl font-bold font-serif">
-              Seu café, no seu tempo do seu jeitinho 💛
+              Seu café, no seu tempo, do seu jeitinho 💛
+            </h2>
+          </div>
+          </div>
+          <div className="bg-[#fff9f3] hidden lg:block m-6 rounded-lg absolute bottom-0 left-0 p-3 text-left text-[#754416]">
+            <h2 className="text-3xl font-bold font-serif">
+              Seu café, no seu tempo, do seu jeitinho 💛
             </h2>
           </div>
         </div>
