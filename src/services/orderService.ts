@@ -1,36 +1,40 @@
 
 import { Order, CartItem } from '@/models/Drink';
+import { apiRequest } from './api';
 
 export class OrderService {
-  private static readonly ORDER_HISTORY_KEY = 'orderHistory';
-
-  static createOrder(items: CartItem[], total: number): Order {
+  static createOrderData(items: CartItem[], total: number) {
     return {
-      id: Date.now().toString(),
       items,
-      total,
-      date: new Date().toISOString(),
-      status: "Concluído"
+      total
     };
   }
 
-  static saveOrder(order: Order): void {
+  static async saveOrder(items: CartItem[], total: number): Promise<Order> {
     try {
-      const existingOrders = this.getOrderHistory();
-      const updatedOrders = [order, ...existingOrders];
-      localStorage.setItem(this.ORDER_HISTORY_KEY, JSON.stringify(updatedOrders));
+      const orderData = this.createOrderData(items, total);
+      const response = await apiRequest('POST', '/orders', orderData);
+      return response.data;
     } catch (error) {
-      console.error('Error saving order:', error);
+      console.error('Save order error:', error);
+      throw new Error('Falha ao salvar pedido. Tente novamente.');
     }
   }
 
-  static getOrderHistory(): Order[] {
+  static async getOrderHistory(): Promise<Order[]> {
     try {
-      const ordersData = localStorage.getItem(this.ORDER_HISTORY_KEY);
-      return ordersData ? JSON.parse(ordersData) : [];
+      const response = await apiRequest('GET', '/orders');
+      return response.data;
     } catch (error) {
-      console.error('Error parsing order history:', error);
-      return [];
+      console.error('Get order history error:', error);
+      // Fallback para localStorage em caso de erro
+      try {
+        const ordersData = localStorage.getItem('orderHistory');
+        return ordersData ? JSON.parse(ordersData) : [];
+      } catch (fallbackError) {
+        console.error('Fallback error:', fallbackError);
+        return [];
+      }
     }
   }
 }

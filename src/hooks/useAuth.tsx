@@ -8,43 +8,91 @@ export const useAuth = () => {
     user: null,
     isAuthenticated: false
   });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const user = AuthService.getCurrentUser();
-    setAuthState({
-      user,
-      isAuthenticated: !!user
-    });
+    const initAuth = async () => {
+      try {
+        const user = await AuthService.getCurrentUser();
+        setAuthState({
+          user,
+          isAuthenticated: !!user
+        });
+      } catch (error) {
+        console.error('Auth initialization error:', error);
+        setAuthState({
+          user: null,
+          isAuthenticated: false
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    initAuth();
   }, []);
 
-  const login = (email: string, password: string) => {
-    const user = AuthService.login(email, password);
-    setAuthState({
-      user,
-      isAuthenticated: true
-    });
-    return user;
+  const login = async (email: string, password: string) => {
+    try {
+      setLoading(true);
+      setError(null);
+      const user = await AuthService.login(email, password);
+      setAuthState({
+        user,
+        isAuthenticated: true
+      });
+      return user;
+    } catch (error: any) {
+      setError(error.message);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const register = (userData: Omit<User, 'isNewUser'>) => {
-    const user = AuthService.register(userData);
-    setAuthState({
-      user,
-      isAuthenticated: true
-    });
-    return user;
+  const register = async (userData: Omit<User, 'isNewUser'>) => {
+    try {
+      setLoading(true);
+      setError(null);
+      const user = await AuthService.register(userData);
+      setAuthState({
+        user,
+        isAuthenticated: true
+      });
+      return user;
+    } catch (error: any) {
+      setError(error.message);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const logout = () => {
-    AuthService.logout();
-    setAuthState({
-      user: null,
-      isAuthenticated: false
-    });
+  const logout = async () => {
+    try {
+      setLoading(true);
+      await AuthService.logout();
+      setAuthState({
+        user: null,
+        isAuthenticated: false
+      });
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Mesmo com erro, limpa o estado
+      setAuthState({
+        user: null,
+        isAuthenticated: false
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return {
     ...authState,
+    loading,
+    error,
     login,
     register,
     logout

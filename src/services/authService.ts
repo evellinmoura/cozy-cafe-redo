@@ -1,37 +1,45 @@
 
 import { User } from '@/models/User';
+import { apiRequest } from './api';
 
 export class AuthService {
-  private static readonly USER_STORAGE_KEY = 'user';
-
-  static login(email: string, password: string): User {
-    // Simular login
-    const user: User = { email, name: "Usuário" };
-    this.saveUser(user);
-    return user;
-  }
-
-  static register(userData: Omit<User, 'isNewUser'>): User {
-    const user: User = { ...userData, isNewUser: true };
-    this.saveUser(user);
-    return user;
-  }
-
-  static logout(): void {
-    localStorage.removeItem(this.USER_STORAGE_KEY);
-  }
-
-  static getCurrentUser(): User | null {
+  static async login(email: string, password: string): Promise<User> {
     try {
-      const userData = localStorage.getItem(this.USER_STORAGE_KEY);
-      return userData ? JSON.parse(userData) : null;
+      const response = await apiRequest('POST', '/auth/login', { email, password });
+      return response.data;
     } catch (error) {
-      console.error('Error parsing user data:', error);
-      return null;
+      console.error('Login error:', error);
+      throw new Error('Falha no login. Verifique suas credenciais.');
     }
   }
 
-  private static saveUser(user: User): void {
-    localStorage.setItem(this.USER_STORAGE_KEY, JSON.stringify(user));
+  static async register(userData: Omit<User, 'isNewUser'>): Promise<User> {
+    try {
+      const response = await apiRequest('POST', '/auth/register', userData);
+      return response.data;
+    } catch (error) {
+      console.error('Register error:', error);
+      throw new Error('Falha no cadastro. Tente novamente.');
+    }
+  }
+
+  static async logout(): Promise<void> {
+    try {
+      await apiRequest('DELETE', '/auth/logout');
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Mesmo com erro, remove do localStorage
+      localStorage.removeItem('user');
+    }
+  }
+
+  static async getCurrentUser(): Promise<User | null> {
+    try {
+      const response = await apiRequest('GET', '/auth/me');
+      return response.data;
+    } catch (error) {
+      console.error('Get current user error:', error);
+      return null;
+    }
   }
 }
