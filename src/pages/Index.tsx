@@ -1,33 +1,16 @@
+
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ShoppingCart, User, History, CircleUserRound, ChevronDown, LogOut, ChefHat } from "lucide-react";
+import { ShoppingCart, User, History, CircleUserRound, ChevronDown, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { DrinkModal } from "@/components/DrinkModal";
 import { Cart } from "@/components/Cart";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { set } from "date-fns";
-
-interface Drink {
-  id: string;
-  name: string;
-  price: number;
-  image: string;
-  description: string;
-}
-
-interface Customizations {
-  name: string;
-  price: number;
-}
-
-interface CartItem {
-  drink: Drink;
-  quantity: number;
-  customizations: Customizations[];
-  totalPrice: number;
-}
+import { useAuth } from "@/hooks/useAuth";
+import { useCart } from "@/hooks/useCart";
+import { Drink, Customization, CartItem } from "@/models/Drink";
 
 const drinks: Drink[] = [
   {
@@ -69,12 +52,20 @@ const drinks: Drink[] = [
 
 const Index = () => {
   const [selectedDrink, setSelectedDrink] = useState<Drink | null>(null);
-  const [cart, setCart] = useState<CartItem[]>([]);
   const [showCart, setShowCart] = useState(false);
   const [editingItemIndex, setEditingItemIndex] = useState<number | null>(null);
-  const [initialCustomizations, setInitialCustomizations] = useState<Customizations[]>([]);
+  const [initialCustomizations, setInitialCustomizations] = useState<Customization[]>([]);
   const [initialQuantity, setInitialQuantity] = useState<number>(1);
+  
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
+  const { 
+    cart, 
+    addToCart, 
+    updateCart, 
+    updateItem, 
+    getTotalItems 
+  } = useCart();
 
   useEffect(() => {
     const handleOpenCart = () => setShowCart(true);
@@ -83,9 +74,6 @@ const Index = () => {
       window.removeEventListener("open-cart", handleOpenCart);
     };
   }, []);
-
-  // Check if user is logged in
-  const user = JSON.parse(localStorage.getItem("user") || "null");
 
   const handleEditItem = (item: CartItem, index: number) => {
     setSelectedDrink(item.drink);
@@ -97,23 +85,17 @@ const Index = () => {
 
   const handleAddToCart = (item: CartItem) => {
     if (editingItemIndex !== null) {
-      const newCart = [...cart];
-      newCart[editingItemIndex] = item;
-      setCart(newCart);
+      updateItem(editingItemIndex, item);
       setEditingItemIndex(null);
       setShowCart(true);
     } else {
-      setCart((prevCart) => [...prevCart, item]);
+      addToCart(item.drink, item.quantity, item.customizations);
     }
     setSelectedDrink(null);
   };
 
-  const getTotalItems = () => {
-    return cart.reduce((total, item) => total + item.quantity, 0);
-  };
-
   const handleLogout = () => {
-    localStorage.removeItem("user");
+    logout();
     window.location.reload();
   };
 
@@ -122,9 +104,6 @@ const Index = () => {
       {/* Desktop header */}
       <header className="hidden lg:block bg-[#fff8e0]">
         <div className="max-w-6xl mx-auto px-2 sm:px-4 py-2 flex justify-between items-center">
-          {/*<div className="flex items-center gap-4">
-            <h1 className="text-2xl font-bold text-orange-800">☕ Terra&Café</h1>
-          </div>*/}
           <div className="logo-colorido flex items-center gap-3">
             <img 
             src="public/logo-bege.png"  
@@ -265,8 +244,6 @@ const Index = () => {
         </div>
       </section>
 
-
-
       {/* Menu Section */}
       <section className="max-w-6xl mx-auto px-4 pb-8">
         <h3 className="text-2xl font-bold text-orange-800 mb-6">
@@ -352,7 +329,7 @@ const Index = () => {
           items={cart}
           isOpen={showCart}
           onClose={() => setShowCart(false)}
-          onUpdateCart={setCart}
+          onUpdateCart={updateCart}
           onEditItem={handleEditItem}
         />
       )}

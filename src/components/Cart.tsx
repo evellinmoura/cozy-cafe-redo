@@ -7,26 +7,10 @@ import { Separator } from "@/components/ui/separator";
 import { Plus, Minus, Trash2, Pencil } from "lucide-react";
 import { PaymentModal } from "./PaymentModal";
 import { useNavigate } from "react-router-dom";
-
-interface Drink {
-  id: string;
-  name: string;
-  price: number;
-  image: string;
-  description: string;
-}
-
-interface Customizations {
-  name: string;
-  price: number;
-}
-
-interface CartItem {
-  drink: Drink;
-  quantity: number;
-  customizations: Customizations[];
-  totalPrice: number;
-}
+import { useAuth } from "@/hooks/useAuth";
+import { useOrder } from "@/hooks/useOrder";
+import { useCart } from "@/hooks/useCart";
+import { CartItem } from "@/models/Drink";
 
 interface CartProps {
   items: CartItem[];
@@ -39,9 +23,10 @@ interface CartProps {
 export const Cart = ({ items, isOpen, onClose, onUpdateCart, onEditItem }: CartProps) => {
   const [showPayment, setShowPayment] = useState(false);
   const navigate = useNavigate();
-
-  // Check if user is logged in
-  const user = JSON.parse(localStorage.getItem("user") || "null");
+  
+  const { user } = useAuth();
+  const { processOrder } = useOrder();
+  const { getTotalPrice } = useCart();
 
   const updateQuantity = (index: number, newQuantity: number) => {
     if (newQuantity <= 0) {
@@ -70,24 +55,14 @@ export const Cart = ({ items, isOpen, onClose, onUpdateCart, onEditItem }: CartP
     onEditItem(item, index);
   };
 
-  const getTotalPrice = () => {
+  const getCurrentTotal = () => {
     return items.reduce((total, item) => total + item.totalPrice, 0);
   };
 
   const handlePaymentComplete = () => {
-    // Save order to history
-    const order = {
-      id: Date.now().toString(),
-      items: items,
-      total: getTotalPrice(),
-      date: new Date().toISOString(),
-      status: "Concluído"
-    };
+    const total = getCurrentTotal();
+    processOrder(items, total);
     
-    const existingOrders = JSON.parse(localStorage.getItem("orderHistory") || "[]");
-    localStorage.setItem("orderHistory", JSON.stringify([order, ...existingOrders]));
-    
-    // Clear cart and show confirmation
     onUpdateCart([]);
     setShowPayment(false);
     navigate("/payment-confirmation");
@@ -95,7 +70,6 @@ export const Cart = ({ items, isOpen, onClose, onUpdateCart, onEditItem }: CartP
 
   const handleCheckout = () => {
     if (!user) {
-      // Close cart and redirect to login
       onClose();
       navigate("/login");
     } else {
@@ -210,13 +184,11 @@ export const Cart = ({ items, isOpen, onClose, onUpdateCart, onEditItem }: CartP
 
             <Separator />
 
-            {/* Total */}
             <div className="flex justify-between items-center font-bold text-lg">
               <span>Subtotal</span>
-              <span className="text-orange-600">R$ {getTotalPrice().toFixed(2)}</span>
+              <span className="text-orange-600">R$ {getCurrentTotal().toFixed(2)}</span>
             </div>
 
-            {/* Action Buttons */}
             <div className="flex gap-3 pt-4">
               <Button 
                 variant="outline" 
@@ -236,11 +208,10 @@ export const Cart = ({ items, isOpen, onClose, onUpdateCart, onEditItem }: CartP
         </DialogContent>
       </Dialog>
 
-      {/* Modal de Pagamento */}
       <PaymentModal
         isOpen={showPayment}
         onClose={() => setShowPayment(false)}
-        total={getTotalPrice()}
+        total={getCurrentTotal()}
         onPaymentComplete={handlePaymentComplete}
       />
     </>
