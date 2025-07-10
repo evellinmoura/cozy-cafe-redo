@@ -167,13 +167,6 @@ Component ← Hook ← Service Response
 | Testabilidade | Separada | Integrada com React |
 | Reutilização | Limitada | Alta |
 
-## 🚀 Próximos Passos Sugeridos
-
-1. **Implementar testes unitários** para services
-2. **Adicionar Context API** para estado global quando necessário
-3. **Implementar middleware** para logging/debugging
-4. **Adicionar validação** com Zod nos services
-5. **Implementar cache** nos hooks quando apropriado
 
 ## 📝 Convenções Estabelecidas
 
