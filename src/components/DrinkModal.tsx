@@ -93,7 +93,7 @@ export const DrinkModal = ({ drink, isOpen, onClose, onAddToCart, initialCustomi
           <img
             src="public/cafe-nas-maos.jpeg"
             alt=""
-            className="w-full md:w-1/2 h-auto rounded-lg object-cover"
+            className="hidden md:block w-full md:w-1/2 h-auto rounded-lg object-cover"
           />
 
           {/* Informações da bebida */}
@@ -145,7 +145,7 @@ export const DrinkModal = ({ drink, isOpen, onClose, onAddToCart, initialCustomi
             Subtotal: R$ {getTotalPrice().toFixed(2)}
           </div>
 
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex md:flex-col md:flex-row items-center justify-between gap-4">
             {/* Quantidade */}
             <div className="flex items-center rounded-full bg-[#f8e0b3] px-2">
               <Button
