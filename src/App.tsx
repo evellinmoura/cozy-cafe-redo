@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -16,6 +15,7 @@ import KitchenDiscounts from "./pages/KitchenDiscounts";
 import KitchenOrdersHistory from "./pages/KitchenOrdersHistory";
 import NotFound from "./pages/NotFound";
 import KitchenLogin from "./pages/KitchenLogin";
+import OrderStatus from "./pages/OrderStatus";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +31,7 @@ const App = () => (
           <Route path="/register" element={<Register />} />
           <Route path="/history" element={<History />} />
           <Route path="/payment-confirmation" element={<PaymentConfirmation />} />
+          <Route path="/order-status" element={<OrderStatus />} />
 
           {/* Kitchen Routes */}
           <Route path="/kitchenlogin" element={<KitchenLogin />} />

@@ -13,7 +13,7 @@ const Login = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => { // chama o email, password de Auth
     e.preventDefault();
     login(email, password);
     navigate("/");

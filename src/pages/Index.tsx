@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ShoppingCart, User, History, CircleUserRound, ChevronDown, LogOut } from "lucide-react";
+import { ShoppingCart, User, History, CircleUserRound, ChevronDown, LogOut, List } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { DrinkModal } from "@/components/DrinkModal";
 import { Cart } from "@/components/Cart";
@@ -123,6 +123,14 @@ const Index = () => {
                 </Badge>
               )}
               Carrinho
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => navigate("/order-status")}
+              className="hover:bg-[#e2ce87] rounded-full border-transparent bg-transparent text-[#754416]"
+            >
+              <List className="h-5 w-5 text-[#754416]" />
+              Acompanhar pedido
             </Button>
             {user ? (
               <div className="flex items-center gap-4 text-[#754416]">

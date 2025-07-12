@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { AuthService } from '@/services/authService';
-import { User, AuthState, UserRegistration } from '@/models/User';
 
+import { User, AuthState, UserRegister } from '@/models/User';
 export const useAuth = () => {
   const [authState, setAuthState] = useState<AuthState>({
     user: null,
@@ -32,7 +32,7 @@ export const useAuth = () => {
     initAuth();
   }, []);
 
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string) => {// login
     try {
       setLoading(true);
       setError(null);
@@ -50,7 +50,7 @@ export const useAuth = () => {
     }
   };
 
-  const register = async (userData: UserRegistration) => {
+  const register = async (userData: UserRegister) => {
     try {
       setLoading(true);
       setError(null);

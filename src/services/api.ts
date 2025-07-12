@@ -1,6 +1,5 @@
-
 // Simulação de endpoints - em produção seria uma API real
-const API_BASE_URL = 'https://api.terracafe.com'; // URL fictícia para exemplo
+const API_BASE_URL = 'https://localhost:8080'; // URL fictícia para exemplo
 
 // Simulador de delay de rede
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
