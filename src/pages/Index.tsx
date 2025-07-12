@@ -137,7 +137,7 @@ const Index = () => {
                   <DropdownMenuContent align="end" className="w-48 bg-[#d7dfaf] text-[#754416] rounded-sm">
                     <DropdownMenuItem className="hover:bg-[#e2ce87]" onClick={() => navigate("/history")}>
                       <History className="h-4 w-4 mr-2" />
-                      Histórico
+                      Histórico e Pontos
                     </DropdownMenuItem>
                     <DropdownMenuItem className="hover:bg-[#e2ce87]" onClick={() => handleLogout()}>
                       <LogOut className="h-4 w-4 mr-2" />

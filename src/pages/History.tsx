@@ -108,6 +108,10 @@ const History = () => {
         </div>
 
         <div className="space-y-6">
+          <h3 className="text-2xl font-bold text-orange-800">
+            Total de Pontos: 350
+          </h3>
+          
           <h3 className="text-xl font-bold text-orange-800">
             Esse é o seu Histórico com a gente 😊
           </h3>
