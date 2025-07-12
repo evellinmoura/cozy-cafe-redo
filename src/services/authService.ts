@@ -1,5 +1,4 @@
-
-import { User } from '@/models/User';
+import { User, UserRegistration } from '@/models/User';
 import { apiRequest } from './api';
 
 export class AuthService {
@@ -13,7 +12,7 @@ export class AuthService {
     }
   }
 
-  static async register(userData: Omit<User, 'isNewUser'>): Promise<User> {
+  static async register(userData: UserRegistration): Promise<User> {
     try {
       const response = await apiRequest('POST', '/auth/register', userData);
       return response.data;

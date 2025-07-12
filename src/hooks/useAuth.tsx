@@ -1,7 +1,6 @@
-
 import { useState, useEffect } from 'react';
 import { AuthService } from '@/services/authService';
-import { User, AuthState } from '@/models/User';
+import { User, AuthState, UserRegistration } from '@/models/User';
 
 export const useAuth = () => {
   const [authState, setAuthState] = useState<AuthState>({
@@ -51,7 +50,7 @@ export const useAuth = () => {
     }
   };
 
-  const register = async (userData: Omit<User, 'isNewUser'>) => {
+  const register = async (userData: UserRegistration) => {
     try {
       setLoading(true);
       setError(null);
