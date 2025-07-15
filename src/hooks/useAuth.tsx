@@ -39,7 +39,7 @@ export const useAuth = () => {
       const user = await AuthService.login(email, password);
       setAuthState({
         user,
-        isAuthenticated: false
+        isAuthenticated: true
       });
       return user;
     } catch (error: any) {

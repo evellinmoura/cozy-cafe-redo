@@ -11,8 +11,9 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuIte
 import { useAuth } from "@/hooks/useAuth";
 import { useCart } from "@/hooks/useCart";
 import { Drink, Customization, CartItem } from "@/models/Drink";
+import { DrinkService } from "@/services/drinkService";
 
-const drinks: Drink[] = [
+/*const drinks: Drink[] = [
   {
     id: "1",
     name: "Café coado",
@@ -48,7 +49,7 @@ const drinks: Drink[] = [
     image: "☕",
     description: "Café americano premium"
   }
-];
+];*/
 
 const Index = () => {
   const [selectedDrink, setSelectedDrink] = useState<Drink | null>(null);
@@ -56,7 +57,8 @@ const Index = () => {
   const [editingItemIndex, setEditingItemIndex] = useState<number | null>(null);
   const [initialCustomizations, setInitialCustomizations] = useState<Customization[]>([]);
   const [initialQuantity, setInitialQuantity] = useState<number>(1);
-  
+  const [drinks, setDrinks] = useState<Drink[]>([]);
+
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const { 
@@ -66,6 +68,19 @@ const Index = () => {
     updateItem, 
     getTotalItems 
   } = useCart();
+
+  useEffect(() => {
+    const fetchDrinks = async () => {
+      try {
+        const data = await DrinkService.getDrinks();
+        setDrinks(data);
+      } catch (error) {
+        console.error("Failed to fetch drinks:", error);
+      }
+    };
+
+    fetchDrinks();
+  }, []);
 
   useEffect(() => {
     const handleOpenCart = () => setShowCart(true);
