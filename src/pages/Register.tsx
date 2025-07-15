@@ -19,7 +19,7 @@ const Register = () => {
     e.preventDefault();
     try {
       await register ({name, email, phone, password});
-      navigate("/");
+      navigate("/login");
     } catch (error){
       console.error('Registration failed:',error);
     }
@@ -112,6 +112,7 @@ const Register = () => {
                   <Button 
                     type="submit"
                     className="w-full bg-[#d7dfaf] hover:bg-[#e2ce87] text-[#754416] font-bold transition-colors duration-300 rounded-full"
+                    onClick={handleSubmit}
                   >
                     Cadastrar
                   </Button>

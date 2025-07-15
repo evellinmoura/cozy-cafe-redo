@@ -17,7 +17,7 @@ export const useAuth = () => {
         setAuthState({
           user,
           isAuthenticated: !!user
-        });
+        }); 
       } catch (error) {
         console.error('Auth initialization error:', error);
         setAuthState({
@@ -39,7 +39,7 @@ export const useAuth = () => {
       const user = await AuthService.login(email, password);
       setAuthState({
         user,
-        isAuthenticated: true
+        isAuthenticated: false
       });
       return user;
     } catch (error: any) {
@@ -57,7 +57,7 @@ export const useAuth = () => {
       const user = await AuthService.register(userData);
       setAuthState({
         user,
-        isAuthenticated: true
+        isAuthenticated: false
       });
       return user;
     } catch (error: any) {

@@ -1,7 +1,9 @@
 export interface User {
+  id?: number;
   name: string;
   email: string;
   phone?: string;
+  pontos_fidelidade?: number;
   isNewUser?: boolean;
 }
 
@@ -9,6 +11,7 @@ export interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
 }
+
  export interface UserRegister{
   name: string;
   email: string;
