@@ -13,43 +13,6 @@ import { useCart } from "@/hooks/useCart";
 import { Drink, Customization, CartItem } from "@/models/Drink";
 import { DrinkService } from "@/services/drinkService";
 
-/*const drinks: Drink[] = [
-  {
-    id: "1",
-    name: "Café coado",
-    price: 13.00,
-    image: "☕",
-    description: "Café coado tradicional"
-  },
-  {
-    id: "2",
-    name: "Café expresso",
-    price: 15.00,
-    image: "☕",
-    description: "Expresso forte e encorpado"
-  },
-  {
-    id: "3",
-    name: "Café Americano",
-    price: 13.00,
-    image: "☕",
-    description: "Café americano suave"
-  },
-  {
-    id: "4",
-    name: "Café coado",
-    price: 15.00,
-    image: "☕",
-    description: "Café coado especial"
-  },
-  {
-    id: "5",
-    name: "Café Americano",
-    price: 16.00,
-    image: "☕",
-    description: "Café americano premium"
-  }
-];*/
 
 const Index = () => {
   const [selectedDrink, setSelectedDrink] = useState<Drink | null>(null);
