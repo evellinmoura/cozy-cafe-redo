@@ -3,12 +3,7 @@ const API_BASE_URL = 'http://localhost:8000';
 
 // Função para obter o token de autenticação
 const getAuthToken = (): string | null => {
-  const userData = localStorage.getItem('user');
-  if (userData) {
-    const user = JSON.parse(userData);
-    return user.token || null;
-  }
-  return null;
+  return localStorage.getItem('token');
 };
 
 // Função para criar headers padrão

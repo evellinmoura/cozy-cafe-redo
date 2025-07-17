@@ -139,21 +139,21 @@ const Index = () => {
               )}
               Carrinho
             </Button>
-            <Button
-              variant="outline"
-              onClick={() => navigate("/order-status")}
-              className="hover:bg-[#e2ce87] rounded-full border-transparent bg-transparent text-[#754416]"
-            >
-              <List className="h-5 w-5 text-[#754416]" />
-              Acompanhar pedido
-            </Button>
             {user ? (
               <div className="flex items-center gap-4 text-[#754416]">
+                <Button
+                  variant="outline"
+                  onClick={() => navigate("/order-status")}
+                  className="hover:bg-[#e2ce87] rounded-full border-transparent bg-transparent text-[#754416]"
+                >
+                  <List className="h-5 w-5 text-[#754416]" />
+                  Acompanhar pedido
+                </Button>
                 <DropdownMenu>
                   <DropdownMenuTrigger>
                     <Button className="hover:bg-[#e2ce87] rounded-full bg-[#d7dfaf] text-[#754416]">
                       <User className="h-4 w-4 mr-2" />
-                      Olá, {user.name} 💛
+                      Olá, {user.nome} 💛
                       <ChevronDown className="ml-2 h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>
@@ -212,7 +212,7 @@ const Index = () => {
                     <DropdownMenu>
                       <DropdownMenuTrigger>
                         <Button className="hover:bg-[#e2ce87] rounded-full bg-[#d7dfaf] text-[#754416]">
-                          Olá, {user.name} 💛
+                          Olá, {user.nome} 💛
                           <ChevronDown className="ml-2 h-4 w-4" />
                         </Button>
                       </DropdownMenuTrigger>

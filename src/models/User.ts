@@ -1,10 +1,10 @@
 export interface User {
   id?: number;
-  name: string;
+  nome: string;
   email: string;
-  phone?: string;
+  telefone?: string;
   pontos_fidelidade?: number;
-  isNewUser?: boolean;
+  /*isNewUser?: boolean;*/
 }
 
 export interface AuthState {
@@ -13,8 +13,8 @@ export interface AuthState {
 }
 
  export interface UserRegister{
-  name: string;
+  nome: string;
   email: string;
-  phone?:string;
-  password:string;
+  telefone?:string;
+  senha:string;
  }

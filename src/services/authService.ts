@@ -2,10 +2,13 @@ import { User, UserRegister } from '@/models/User';
 import { apiRequest } from './api';
 
 export class AuthService {
-  static async login(email: string, password: string): Promise<User> {
+  static async login(email: string, senha: string): Promise<User> {
     try {
-      const response = await apiRequest('POST', '/cliente/login', { email, password });
-      return response.data;
+      const response = await apiRequest('POST', '/cliente/login', { email, senha });
+      const { token, ...user } = response;
+      console.log('Login response: ', response);
+      localStorage.setItem("token", token);
+      return user;
     } catch (error) {
       console.error('Login error:', error); 
       throw new Error('Falha no login. Verifique suas credenciais.');
@@ -35,6 +38,7 @@ export class AuthService {
   static async getCurrentUser(): Promise<User | null> {
     try {
       const response = await apiRequest('GET', '/cliente/me');
+      console.log(response.data);
       return response.data;
     } catch (error) {
       console.error('Get current user error:', error);

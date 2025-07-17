@@ -32,11 +32,11 @@ export const useAuth = () => {
     initAuth();
   }, []);
 
-  const login = async (email: string, password: string) => {// login
+  const login = async (email: string, senha: string) => {// login
     try {
       setLoading(true);
       setError(null);
-      const user = await AuthService.login(email, password);
+      const user = await AuthService.login(email, senha);
       setAuthState({
         user,
         isAuthenticated: true

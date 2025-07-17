@@ -8,17 +8,17 @@ import { ArrowLeft } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
 const Register = () => {
-  const [name, setName] = useState("");
+  const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [password, setPassword] = useState("");
+  const [telefone, setTelefone] = useState("");
+  const [senha, setSenha] = useState("");
   const navigate = useNavigate();
   const { register } = useAuth();
 
   const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await register ({name, email, phone, password});
+      await register ({nome, email, telefone, senha});
       navigate("/login");
     } catch (error){
       console.error('Registration failed:',error);
@@ -63,8 +63,8 @@ const Register = () => {
                       id="name"
                       type="text"
                       placeholder="Seu nome completo"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
+                      value={nome}
+                      onChange={(e) => setNome(e.target.value)}
                       required
                       className="rounded-lg"
                     />
@@ -89,8 +89,8 @@ const Register = () => {
                       id="phone"
                       type="tel"
                       placeholder="(11) 99999-9999"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
+                      value={telefone}
+                      onChange={(e) => setTelefone(e.target.value)}
                       required
                       className="rounded-lg"
                     />
@@ -102,8 +102,8 @@ const Register = () => {
                       id="password"
                       type="password"
                       placeholder="pelo menos 8 caracteres"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
+                      value={senha}
+                      onChange={(e) => setSenha(e.target.value)}
                       required
                       className="rounded-lg"
                     />

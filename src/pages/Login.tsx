@@ -9,13 +9,13 @@ import { useAuth } from "@/hooks/useAuth";
 
 const Login = () => {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [senha, setSenha] = useState("");
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => { // chama o email, password de Auth
+  const handleSubmit = (e: React.FormEvent) => { // chama o email, senha de Auth
     e.preventDefault();
-    login(email, password);
+    login(email, senha);
     navigate("/");
   };
 
@@ -72,8 +72,8 @@ const Login = () => {
                       id="password"
                       type="password"
                       placeholder="pelo menos 8 caracteres"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
+                      value={senha}
+                      onChange={(e) => setSenha(e.target.value)}
                       required
                       className="rounded-lg"
                     />
