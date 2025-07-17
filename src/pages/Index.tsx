@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,7 +12,6 @@ import { useCart } from "@/hooks/useCart";
 import { Drink, Customization, CartItem } from "@/models/Drink";
 import { DrinkService } from "@/services/drinkService";
 
-
 const Index = () => {
   const [selectedDrink, setSelectedDrink] = useState<Drink | null>(null);
   const [showCart, setShowCart] = useState(false);
@@ -21,9 +19,10 @@ const Index = () => {
   const [initialCustomizations, setInitialCustomizations] = useState<Customization[]>([]);
   const [initialQuantity, setInitialQuantity] = useState<number>(1);
   const [drinks, setDrinks] = useState<Drink[]>([]);
+  const [isLoadingDrinks, setIsLoadingDrinks] = useState(true);
 
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user, loading, logout, isAuthenticated } = useAuth();
   const { 
     cart, 
     addToCart, 
@@ -35,10 +34,16 @@ const Index = () => {
   useEffect(() => {
     const fetchDrinks = async () => {
       try {
+        setIsLoadingDrinks(true);
         const data = await DrinkService.getDrinks();
-        setDrinks(data);
+        console.log("Drinks fetched:", data);
+        setDrinks(data || []); // Garante que será array mesmo se vier undefined
+        console.log("Drinks state updated:", drinks);
       } catch (error) {
         console.error("Failed to fetch drinks:", error);
+        setDrinks([]); // Define como array vazio em caso de erro
+      } finally {
+        setIsLoadingDrinks(false);
       }
     };
 
@@ -84,9 +89,10 @@ const Index = () => {
         <div className="max-w-6xl mx-auto px-2 sm:px-4 py-2 flex justify-between items-center">
           <div className="logo-colorido flex items-center gap-3">
             <img 
-            src="public/logo-bege.png"  
-            className="h-12"
-            alt="Logo Terra&Café" />
+              src="public/logo-bege.png"  
+              className="h-12"
+              alt="Logo Terra&Café" 
+            />
           </div>
           <div className="flex items-center gap-2">
             <Button
@@ -102,7 +108,10 @@ const Index = () => {
               )}
               Carrinho
             </Button>
-            {user ? (
+
+            {loading ? (
+              <div className="animate-pulse bg-[#d7dfaf] rounded-full w-32 h-10"></div>
+            ) : isAuthenticated && user ? (
               <div className="flex items-center gap-4 text-[#754416]">
                 <Button
                   variant="outline"
@@ -116,7 +125,7 @@ const Index = () => {
                   <DropdownMenuTrigger>
                     <Button className="hover:bg-[#e2ce87] rounded-full bg-[#d7dfaf] text-[#754416]">
                       <User className="h-4 w-4 mr-2" />
-                      Olá, {user.nome} 💛
+                      Olá, {user.nome || 'Usuário'} 💛
                       <ChevronDown className="ml-2 h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>
@@ -149,62 +158,65 @@ const Index = () => {
 
       {/* Mobile Header */}
       <header className="block lg:hidden bg-[#fff8e0]">
-          <div className="w-full py-2 flex align-center justify-evenly items-center">
-            <div>
-              <img 
-              src="public\logo-bege.png"
+        <div className="w-full py-2 flex align-center justify-evenly items-center">
+          <div>
+            <img 
+              src="public/logo-bege.png"
               className="h-12"
-              ></img>
-            </div>
-            <div className="flex items-center">
-              <Button
-                variant="outline"
-                onClick={() => setShowCart(true)}
-                className="hover:bg-[#e2ce87] relative rounded-full border-transparent bg-transparent"
-              >
-                <ShoppingCart className="h-5 w-5 text-[#754416]" />
-                {getTotalItems() > 0 && (
-                  <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center bg-orange-500">
-                    {getTotalItems()}
-                  </Badge>
-                )}
-              </Button>
-              <div>
-                {user ? (
-                  <div className="flex items-center text-[#754416]">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger>
-                        <Button className="hover:bg-[#e2ce87] rounded-full bg-[#d7dfaf] text-[#754416]">
-                          Olá, {user.nome} 💛
-                          <ChevronDown className="ml-2 h-4 w-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-40 bg-[#d7dfaf] text-[#754416] rounded-xl">
-                        <DropdownMenuItem className="hover:bg-[#e2ce87]" onClick={() => navigate("/history")}>
-                          <History className="h-4 w-4 mr-2" />
-                          Histórico
-                        </DropdownMenuItem>
-                        <DropdownMenuItem className="hover:bg-[#e2ce87]" onClick={() => handleLogout()}>
-                          <LogOut className="h-4 w-4 mr-2" />
-                          Sair
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </div>
-                ) : (
-                  <div className="flex">
-                    <Button
-                      className="rounded-full hover:bg-[#e2ce87] text-[#754416] bg-[#d7dfaf]"
-                      onClick={() => navigate("/login")}
-                    >
-                      <CircleUserRound className="h-3 w-3 mr-2"/>
-                      Entrar
-                    </Button>
-                  </div>
-                )}
-              </div>
+              alt="Logo Terra&Café"
+            />
+          </div>
+          <div className="flex items-center">
+            <Button
+              variant="outline"
+              onClick={() => setShowCart(true)}
+              className="hover:bg-[#e2ce87] relative rounded-full border-transparent bg-transparent"
+            >
+              <ShoppingCart className="h-5 w-5 text-[#754416]" />
+              {getTotalItems() > 0 && (
+                <Badge className="absolute -top-2 -right-2 h-5 w-5 rounded-full p-0 flex items-center justify-center bg-orange-500">
+                  {getTotalItems()}
+                </Badge>
+              )}
+            </Button>
+            <div>
+              {loading ? (
+                <div className="animate-pulse bg-[#d7dfaf] rounded-full w-24 h-8 ml-2"></div>
+              ) : isAuthenticated && user ? (
+                <div className="flex items-center text-[#754416]">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger>
+                      <Button className="hover:bg-[#e2ce87] rounded-full bg-[#d7dfaf] text-[#754416]">
+                        Olá, {user.nome || 'Usuário'} 💛
+                        <ChevronDown className="ml-2 h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-40 bg-[#d7dfaf] text-[#754416] rounded-xl">
+                      <DropdownMenuItem className="hover:bg-[#e2ce87]" onClick={() => navigate("/history")}>
+                        <History className="h-4 w-4 mr-2" />
+                        Histórico
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="hover:bg-[#e2ce87]" onClick={() => handleLogout()}>
+                        <LogOut className="h-4 w-4 mr-2" />
+                        Sair
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              ) : (
+                <div className="flex">
+                  <Button
+                    className="rounded-full hover:bg-[#e2ce87] text-[#754416] bg-[#d7dfaf]"
+                    onClick={() => navigate("/login")}
+                  >
+                    <CircleUserRound className="h-3 w-3 mr-2"/>
+                    Entrar
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
+        </div>
       </header>
 
       {/* Hero Section */}
@@ -217,10 +229,10 @@ const Index = () => {
               className="w-full h-auto"
             />
             <div className="block lg:hidden p-4 rounded-lg text-left text-[#754416]">
-            <h2 className="text-3xl font-bold font-serif">
-              Seu café, no seu tempo, do seu jeitinho 💛
-            </h2>
-          </div>
+              <h2 className="text-3xl font-bold font-serif">
+                Seu café, no seu tempo, do seu jeitinho 💛
+              </h2>
+            </div>
           </div>
           <div className="bg-[#fff9f3] hidden lg:block m-6 rounded-lg absolute bottom-0 left-0 p-3 text-left text-[#754416]">
             <h2 className="text-3xl font-bold font-serif">
@@ -235,33 +247,55 @@ const Index = () => {
         <h3 className="text-2xl font-bold text-orange-800 mb-6">
           Selecione a base da sua bebida ☕
         </h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {drinks.map((drink) => (
-            <Card key={drink.id} className="hover:shadow-lg transition-shadow cursor-pointer bg-white">
-              <CardHeader className="text-center">
-                <div className="text-4xl mb-2">{drink.image}</div>
-                <CardTitle className="text-lg">{drink.name}</CardTitle>
-                <CardDescription className="text-orange-600 font-semibold">
-                  R$ {drink.price.toFixed(2)}
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Button 
-                  className="w-full bg-orange-500 hover:bg-orange-600"
-                  onClick={() => {
-                    setSelectedDrink(drink);
-                    setInitialCustomizations([]);
-                    setInitialQuantity(1);
-                    setEditingItemIndex(null);
-                    setShowCart(false);
-                  }}
-                >
-                  Escolher
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        
+        {isLoadingDrinks ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[...Array(6)].map((_, i) => (
+              <Card key={`skeleton-${i}`} className="hover:shadow-lg transition-shadow cursor-pointer bg-white">
+                <CardHeader className="text-center">
+                  <div className="h-8 bg-gray-200 rounded animate-pulse mb-2"></div>
+                  <CardTitle className="h-6 bg-gray-200 rounded animate-pulse"></CardTitle>
+                  <CardDescription className="h-4 bg-gray-200 rounded animate-pulse mt-2"></CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-10 bg-gray-200 rounded animate-pulse"></div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : drinks?.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {drinks.map((drink) => (
+              <Card key={drink.id} className="hover:shadow-lg transition-shadow cursor-pointer bg-white">
+                <CardHeader className="text-center">
+                  <div className="text-4xl mb-2">{drink.image}</div>
+                  <CardTitle className="text-lg">{drink.nome}</CardTitle>
+                  <CardDescription className="text-orange-600 font-semibold">
+                    R$ {drink.preco_base}
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Button 
+                    className="w-full bg-orange-500 hover:bg-orange-600"
+                    onClick={() => {
+                      setSelectedDrink(drink);
+                      setInitialCustomizations([]);
+                      setInitialQuantity(1);
+                      setEditingItemIndex(null);
+                      setShowCart(false);
+                    }}
+                  >
+                    Escolher
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-8">
+            <p>Nenhuma bebida disponível no momento</p>
+          </div>
+        )}
       </section>
 
       <footer className="bg-[#412a2b]">
@@ -303,6 +337,7 @@ const Index = () => {
             setSelectedDrink(null);
             setEditingItemIndex(null);
           }}
+          onUpadeteCart={updateCart}
           onAddToCart={handleAddToCart}
           initialCustomizations={initialCustomizations}
           initialQuantity={initialQuantity}

@@ -4,7 +4,7 @@ export interface User {
   email: string;
   telefone?: string;
   pontos_fidelidade?: number;
-  /*isNewUser?: boolean;*/
+  access_token?: string; // lidar com o token
 }
 
 export interface AuthState {
@@ -12,9 +12,9 @@ export interface AuthState {
   isAuthenticated: boolean;
 }
 
- export interface UserRegister{
+export interface UserRegister {
   nome: string;
   email: string;
-  telefone?:string;
-  senha:string;
- }
+  telefone?: string;
+  senha: string;
+}

@@ -6,14 +6,16 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Minus } from "lucide-react";
+import { Drink } from "@/models/Drink";
 
-interface Drink {
+
+/*interface Drink {
   id: string;
   name: string;
   price: number;
   image: string;
   description: string;
-}
+}*/
 
 interface Customizations {
   name: string;
@@ -24,14 +26,15 @@ interface CartItem {
   drink: Drink;
   quantity: number;
   customizations: Customizations[];
-  totalPrice: number;
+  totalPrice?: number;
 }
 
 interface DrinkModalProps {
-  drink: Drink;
+  drink: any;
   isOpen: boolean;
   onClose: () => void;
-  onAddToCart: (item: CartItem) => void;
+  onUpadeteCart: any;
+  onAddToCart: any;
   initialCustomizations?: Customizations[];
   initialQuantity?: number;
   shouldReturnToCart?: boolean;
@@ -44,7 +47,7 @@ const customizations: Customizations[] = [
   { name: "Chocolate ( para polvilhar )", price: 2.00 }
 ];
 
-export const DrinkModal = ({ drink, isOpen, onClose, onAddToCart, initialCustomizations, initialQuantity, shouldReturnToCart }: DrinkModalProps) => {
+export const DrinkModal = ({ drink, isOpen, onClose, onUpadeteCart, onAddToCart, initialCustomizations, initialQuantity, shouldReturnToCart }: DrinkModalProps) => {
   const [selectedCustomizations, setSelectedCustomizations] = useState<Customizations[]>(initialCustomizations || []);
   const [quantity, setQuantity] = useState<number>(initialQuantity || 1);
   const handleCustomizationChange = (customization: Customizations, checked: boolean) => {
@@ -60,7 +63,8 @@ export const DrinkModal = ({ drink, isOpen, onClose, onAddToCart, initialCustomi
   };
 
   const getTotalPrice = () => {
-    const basePrice = drink.price * quantity;
+    console.log("preço base: ", drink.preco_base);
+    const basePrice = drink.preco_base * quantity;
     const customizationPrice = selectedCustomizations.reduce((total, custom) => {
       return total + getCustomizationPrice(custom.name);
     }, 0) * quantity;
@@ -72,8 +76,8 @@ export const DrinkModal = ({ drink, isOpen, onClose, onAddToCart, initialCustomi
       drink,
       quantity,
       customizations: selectedCustomizations,
-      totalPrice: getTotalPrice()
     };
+    console.log("Item to add to cart:", item);
     onAddToCart(item);
     onClose();
     if (shouldReturnToCart) {
@@ -108,8 +112,8 @@ export const DrinkModal = ({ drink, isOpen, onClose, onAddToCart, initialCustomi
                 <div className="flex items-center gap-4 bg-[#fffbe0] rounded-lg px-4 py-2">
                   <div className="text-3xl">{drink.image}</div>
                   <div>
-                    <h3 className="font-semibold text-[#754416]">{drink.name}</h3>
-                    <p className="text-sm text-gray-600">a partir de R$ {drink.price.toFixed(2)}</p>
+                    <h3 className="font-semibold text-[#754416]">{drink.nome}</h3>
+                    <p className="text-sm text-gray-600">a partir de R$ {drink.preco_base}</p>
                   </div>
                 </div>
               </div>
@@ -129,7 +133,7 @@ export const DrinkModal = ({ drink, isOpen, onClose, onAddToCart, initialCustomi
                       />
                       <div>
                         <Label htmlFor={custom.name} className="text-sm">{custom.name}</Label>
-                        <p className="text-sm text-gray-600">R$ {custom.price.toFixed(2)}</p>
+                        <p className="text-sm text-gray-600">R$ {custom.price}</p>
                       </div>
                     </div>
                   ))}
@@ -142,7 +146,7 @@ export const DrinkModal = ({ drink, isOpen, onClose, onAddToCart, initialCustomi
         {/* BASE: Subtotal + quantidade + botão */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 w-full">
           <div className="bg-[#f4b3b3] w-full md:w-1/2 px-4 py-2 text-[#745416] font-semibold rounded-lg text-center">
-            Subtotal: R$ {getTotalPrice().toFixed(2)}
+            Subtotal: R$ {getTotalPrice()}
           </div>
 
           <div className="flex md:flex-col md:flex-row items-center justify-between gap-4">

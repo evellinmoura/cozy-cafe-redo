@@ -1,8 +1,8 @@
 
 export interface Drink {
   id: string;
-  name: string;
-  price: number;
+  nome: string;
+  preco_base: number;
   image: string;
   description: string;
 }

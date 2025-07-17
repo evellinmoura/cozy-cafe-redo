@@ -2,7 +2,7 @@ import { CartItem, Customization } from '@/models/Drink';
 
 export class CartService {
   static calculateItemTotal(item: CartItem): number {
-    const basePrice = item.drink.price * item.quantity;
+    const basePrice = item.drink.preco_base * item.quantity;
     const customizationPrice = item.customizations.reduce((total, custom) => {
       return total + custom.price;
     }, 0) * item.quantity;

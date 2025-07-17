@@ -27,7 +27,7 @@ export const useCart = () => {
       return updatedCart;
     });
   }, []);
-
+ 
   const removeItem = useCallback((index: number) => {
     setCart(prevCart => prevCart.filter((_, i) => i !== index));
   }, []);
@@ -45,6 +45,7 @@ export const useCart = () => {
   }, []);
 
   const getTotalItems = useCallback(() => {
+    console.log("cart: ", cart);
     return cart.reduce((total, item) => total + item.quantity, 0);
   }, [cart]);
 

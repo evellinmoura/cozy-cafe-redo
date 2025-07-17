@@ -1,15 +1,38 @@
-// Configuração da API real
-const API_BASE_URL = 'http://127.0.0.1:8000';
+// Configuração da API
+const API_CONFIG = {
+  // Em desenvolvimento, usar URLs relativas para o proxy funcionar
+  BASE_URL: '',
+  TIMEOUT: 10000, // 10 segundos
+  HEADERS: {
+    'Content-Type': 'application/json',
+  }
+};
 
 // Função para obter o token de autenticação
 const getAuthToken = (): string | null => {
-  return localStorage.getItem('token');
+  const token = localStorage.getItem('token');
+  if (token) {
+    return token;
+  }
+  
+  // Fallback: tentar pegar do user object
+  const userData = localStorage.getItem('user');
+  if (userData) {
+    try {
+      const user = JSON.parse(userData);
+      return user.token || null;
+    } catch {
+      return null;
+    }
+  }
+  return null;
 };
 
 // Função para criar headers padrão
 const getHeaders = (includeAuth: boolean = true): HeadersInit => {
   const headers: HeadersInit = {
     'Content-Type': 'application/json',
+    'Accept': 'application/json',
   };
 
   if (includeAuth) {
@@ -22,10 +45,26 @@ const getHeaders = (includeAuth: boolean = true): HeadersInit => {
   return headers;
 };
 
+// Função para construir URL completa
+const buildUrl = (endpoint: string): string => {
+  // Se já começar com http, usar como está (para produção)
+  if (endpoint.startsWith('http')) {
+    return endpoint;
+  }
+  
+  // Em desenvolvimento, usar URL relativa para ativar o proxy
+  if (endpoint.startsWith('/api')) {
+    return endpoint; // /api/cliente/login
+  }
+  
+  // Para outras rotas, usar diretamente
+  return endpoint; // /bebidas, /cliente, /produto
+};
+
 // Classe para fazer requisições HTTP reais
 export class ApiService {
   static async get(endpoint: string, requireAuth: boolean = true): Promise<any> {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    const response = await fetch(buildUrl(endpoint), {
       method: 'GET',
       headers: getHeaders(requireAuth),
     });
@@ -39,7 +78,7 @@ export class ApiService {
   }
 
   static async post(endpoint: string, data: any, requireAuth: boolean = false): Promise<any> {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    const response = await fetch(buildUrl(endpoint), {
       method: 'POST',
       headers: getHeaders(requireAuth),
       body: JSON.stringify(data),
@@ -54,7 +93,7 @@ export class ApiService {
   }
 
   static async put(endpoint: string, data: any, requireAuth: boolean = true): Promise<any> {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    const response = await fetch(buildUrl(endpoint), {
       method: 'PUT',
       headers: getHeaders(requireAuth),
       body: JSON.stringify(data),
@@ -69,7 +108,7 @@ export class ApiService {
   }
 
   static async delete(endpoint: string, requireAuth: boolean = true): Promise<any> {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    const response = await fetch(buildUrl(endpoint), {
       method: 'DELETE',
       headers: getHeaders(requireAuth),
     });
@@ -131,6 +170,16 @@ export const authAPI = {
   me: () =>
     apiRequest('GET', '/cliente/me', undefined, true),
 };
+
+// API específica para bebidas (usando proxy direto)
+export const bebidasAPI = {
+  getAll: () =>
+    apiRequest('GET', '/bebidas', undefined, false),
+  
+  getById: (id: string) =>
+    apiRequest('GET', `/bebidas/${id}`, undefined, false),
+};
+
 
 export const ordersAPI = {
   getAll: () =>

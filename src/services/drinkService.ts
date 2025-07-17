@@ -5,7 +5,8 @@ export class DrinkService {
     static async getDrinks(): Promise<Drink[]> {
         try {
         const response = await apiRequest("GET", "/bebidas");
-        return response.data;
+        console.log("Resposta das bebidas:", response);
+        return response;
         } catch (error) {
         console.error("Error fetching drinks:", error);
         throw new Error("Failed to fetch drinks. Please try again later.");

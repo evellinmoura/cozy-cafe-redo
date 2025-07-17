@@ -117,7 +117,7 @@ export const Cart = ({ items, isOpen, onClose, onUpdateCart, onEditItem }: CartP
                 <div className="col-span-4 col-start-1 flex items-center gap-2">
                   <span className="text-2xl">{item.drink.image}</span>
                   <div>
-                    <p className="font-medium text-sm">{item.drink.name}</p>
+                    <p className="font-medium text-sm">{item.drink.nome}</p>
                   </div>
                 </div>
                 
@@ -126,7 +126,7 @@ export const Cart = ({ items, isOpen, onClose, onUpdateCart, onEditItem }: CartP
                     <div className="space-y-1">
                       {item.customizations.map((custom, i) => (
                         <Badge key={i} variant="secondary" className="text-xs">
-                          {custom.name} - R$ {custom.price.toFixed(2)}
+                          {custom.name} - R$ {custom.price}
                         </Badge>
                       ))}
                     </div>
@@ -156,7 +156,7 @@ export const Cart = ({ items, isOpen, onClose, onUpdateCart, onEditItem }: CartP
                 </div>
 
                 <div className="col-span-2 col-start-10 text-sm font-medium whitespace-nowrap">
-                  R$ {item.totalPrice.toFixed(2)}
+                  R$ {item.totalPrice}
                 </div>
                 
                 <div className="col-span-1 col-start-12 whitespace-nowrap">
@@ -186,7 +186,7 @@ export const Cart = ({ items, isOpen, onClose, onUpdateCart, onEditItem }: CartP
 
             <div className="flex justify-between items-center font-bold text-lg">
               <span>Subtotal</span>
-              <span className="text-orange-600">R$ {getCurrentTotal().toFixed(2)}</span>
+              <span className="text-orange-600">R$ {getCurrentTotal()}</span>
             </div>
 
             <div className="flex gap-3 pt-4">
