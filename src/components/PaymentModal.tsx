@@ -1,10 +1,12 @@
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { CreditCard, Smartphone, DollarSign, Gift } from "lucide-react";
+import { DiscountStrategy, PixDiscountStrategy, DebitCardDiscountStrategy, VoucherDiscountStrategy, NoDiscountStrategy } from "@/patterns/discountStrategies";
+import { DiscountContext } from "@/patterns/discountContext";
 
 interface PaymentModalProps {
   isOpen: boolean;
@@ -23,17 +25,19 @@ const paymentMethods = [
 export const PaymentModal = ({ isOpen, onClose, total, onPaymentComplete }: PaymentModalProps) => {
   const [selectedMethod, setSelectedMethod] = useState("pix");
 
+  const discountStrategiesMap: { [key: string]: DiscountStrategy } = useMemo(() => ({
+    pix: new PixDiscountStrategy(),
+    credit: new NoDiscountStrategy(),
+    debitCard: new DebitCardDiscountStrategy(),
+    voucher: new VoucherDiscountStrategy()
+  }), []);
+
+  const discountContext = useMemo(() => new DiscountContext(new NoDiscountStrategy), []);
+
   const getDiscountedTotal = () => {
-    switch (selectedMethod) {
-      case "pix":
-        return total * 0.95; // 5% desconto
-      case "debit":
-        return total * 0.9; // 10% desconto
-      case "voucher":
-        return total * 0.9; // 10% desconto
-      default:
-        return total;
-    }
+    const strategy = discountStrategiesMap[selectedMethod] || new NoDiscountStrategy();
+    discountContext.setStrategy(strategy);
+    return discountContext.getDiscountedValue(total);
   };
 
   const handlePayment = () => {
