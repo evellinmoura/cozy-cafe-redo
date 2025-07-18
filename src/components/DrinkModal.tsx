@@ -54,11 +54,12 @@ export const DrinkModal = ({ drink, isOpen, onClose, onUpadeteCart, onAddToCart,
   const [selectedCustomizations, setSelectedCustomizations] = useState<Customizations[]>(initialCustomizations || []);
   const [quantity, setQuantity] = useState<number>(initialQuantity || 1);
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
+  
   const handleCustomizationChange = (customization: Customizations, checked: boolean) => {
     if (checked) {
       setSelectedCustomizations(prev => [...prev, customization]);
     } else {
-      setSelectedCustomizations(prev => prev.filter(c => c !== customization));
+      setSelectedCustomizations(prev => prev.filter(c => c.name != customization.name));
     }
   };
 
@@ -73,6 +74,7 @@ export const DrinkModal = ({ drink, isOpen, onClose, onUpadeteCart, onAddToCart,
     const customizationPrice = selectedCustomizations.reduce((total, custom) => {
       return total + getCustomizationPrice(custom.name);
     }, 0) * quantity;
+    console.log("customizações: ", selectedCustomizations);
     return basePrice + customizationPrice;
   };
 
@@ -98,10 +100,9 @@ export const DrinkModal = ({ drink, isOpen, onClose, onUpadeteCart, onAddToCart,
 
     const fetchIngridients = async () => {
       try {
-        const data = await ingredientsAPI.getAll();
-        console.log("Ingridients fetched:", data);
-        setIngredients(data || []); // Garante que será array mesmo se vier undefined
-        console.log("Drinks state updated:", ingredients);
+        const response = await ingredientsAPI.getAll();
+        console.log("Ingridients fetched:", response);
+        setIngredients(response || []); // Garante que será array mesmo se vier undefined
       } catch (error) {
         console.error("Failed to fetch drinks:", error);
         setIngredients([]); // Define como array vazio em caso de erro
@@ -155,7 +156,7 @@ export const DrinkModal = ({ drink, isOpen, onClose, onUpadeteCart, onAddToCart,
                       <input
                         type="checkbox"
                         id={custom.name}
-                        checked={selectedCustomizations.includes(custom)}
+                        //checked={selectedCustomizations.includes(custom)}
                         onChange={(e) => handleCustomizationChange(custom, e.target.checked)}
                         className="mt-1"
                       />

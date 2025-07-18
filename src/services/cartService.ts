@@ -6,6 +6,7 @@ export class CartService {
     const customizationPrice = item.customizations.reduce((total, custom) => {
       return total + custom.price;
     }, 0) * item.quantity;
+    console.log("Valor calculado: ", basePrice + customizationPrice);
     return basePrice + customizationPrice;
   }
 

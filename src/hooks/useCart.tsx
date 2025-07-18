@@ -35,6 +35,7 @@ export const useCart = () => {
   const updateItem = useCallback((index: number, item: CartItem) => {
     setCart(prevCart => {
       const updatedCart = [...prevCart];
+      item.totalPrice = CartService.calculateItemTotal(item);
       updatedCart[index] = item;
       return updatedCart;
     });

@@ -47,18 +47,19 @@ const getHeaders = (includeAuth: boolean = true): HeadersInit => {
 
 // Função para construir URL completa
 const buildUrl = (endpoint: string): string => {
+  const baseURL = "http://localhost:8000"; // URL base do proxy
   // Se já começar com http, usar como está (para produção)
   if (endpoint.startsWith('http')) {
     return endpoint;
   }
   
   // Em desenvolvimento, usar URL relativa para ativar o proxy
-  if (endpoint.startsWith('/api')) {
+  /*if (endpoint.startsWith('/api')) {
     return endpoint; // /api/cliente/login
-  }
+  }*/
   
   // Para outras rotas, usar diretamente
-  return endpoint; // /bebidas, /cliente, /produto
+  return baseURL + endpoint; // /bebidas, /cliente, /produto
 };
 
 // Classe para fazer requisições HTTP reais
