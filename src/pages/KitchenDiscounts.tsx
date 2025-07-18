@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ArrowLeft, Edit, Trash2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 interface Customer {
   id: string;
@@ -16,8 +17,9 @@ interface Customer {
 
 const KitchenDiscounts = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
 
-  const [customers] = useState<Customer[]>([
+  const [customers, setCustomers] = useState<Customer[]>([
     { id: "PROD001", name: "João", email: "joao.silva@email.com", loyaltyPoints: 5, phone: "3551-4532" },
     { id: "PROD002", name: "Bruna", email: "bruna.carvalho@email.com", loyaltyPoints: 10, phone: "1344-3266" },
     { id: "PROD003", name: "Zé Bentinho da Silva", email: "ze.bentinho.silva@email.com", loyaltyPoints: 5, phone: "3333-4523" },
@@ -36,6 +38,35 @@ const KitchenDiscounts = () => {
     if (points >= 20) return "VIP";
     if (points >= 10) return "Gold";
     return "Bronze";
+  };
+
+  // Função para editar cliente
+  const handleEditCustomer = (customer: Customer) => {
+    console.log("Editando cliente:", customer);
+    toast({
+      title: "Editar Cliente",
+      description: `Funcionalidade de edição para ${customer.name} será implementada.`,
+    });
+  };
+
+  // Função para deletar cliente
+  const handleDeleteCustomer = (customer: Customer) => {
+    console.log("Deletando cliente:", customer);
+    setCustomers(prev => prev.filter(c => c.id !== customer.id));
+    toast({
+      title: "Cliente Removido",
+      description: `${customer.name} foi removido da lista de fidelidade.`,
+      variant: "destructive",
+    });
+  };
+
+  // Função para editar programa de fidelidade
+  const handleEditLoyaltyProgram = () => {
+    console.log("Editando programa de fidelidade");
+    toast({
+      title: "Editar Programa",
+      description: "Funcionalidade de edição do programa de fidelidade será implementada.",
+    });
   };
 
   return (
@@ -66,6 +97,7 @@ const KitchenDiscounts = () => {
               </CardTitle>
               <Button
                 className="bg-orange-500 hover:bg-orange-600"
+                onClick={handleEditLoyaltyProgram}
               >
                 Editar Fidelidade
               </Button>
@@ -105,12 +137,16 @@ const KitchenDiscounts = () => {
                         <Button
                           size="sm"
                           variant="outline"
+                          onClick={() => handleEditCustomer(customer)}
+                          title={`Editar ${customer.name}`}
                         >
                           <Edit className="h-4 w-4" />
                         </Button>
                         <Button
                           size="sm"
                           variant="destructive"
+                          onClick={() => handleDeleteCustomer(customer)}
+                          title={`Deletar ${customer.name}`}
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>
