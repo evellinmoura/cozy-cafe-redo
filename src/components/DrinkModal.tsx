@@ -7,6 +7,9 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Minus } from "lucide-react";
 import { Drink } from "@/models/Drink";
+import { ingredientsAPI } from "@/services/api";
+import { useEffect } from "react";
+import { Ingredient } from "@/models/Drink";
 
 
 /*interface Drink {
@@ -40,16 +43,17 @@ interface DrinkModalProps {
   shouldReturnToCart?: boolean;
 }
 
-const customizations: Customizations[] = [
+/*const customizations: Customizations[] = [
   { name: "Leite de amêndoas", price: 3.50 },
   { name: "Leite de coco", price: 3.00 },
   { name: "Xarope de Caramelo", price: 3.50 },
   { name: "Chocolate ( para polvilhar )", price: 2.00 }
-];
+];*/
 
 export const DrinkModal = ({ drink, isOpen, onClose, onUpadeteCart, onAddToCart, initialCustomizations, initialQuantity, shouldReturnToCart }: DrinkModalProps) => {
   const [selectedCustomizations, setSelectedCustomizations] = useState<Customizations[]>(initialCustomizations || []);
   const [quantity, setQuantity] = useState<number>(initialQuantity || 1);
+  const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const handleCustomizationChange = (customization: Customizations, checked: boolean) => {
     if (checked) {
       setSelectedCustomizations(prev => [...prev, customization]);
@@ -57,6 +61,7 @@ export const DrinkModal = ({ drink, isOpen, onClose, onUpadeteCart, onAddToCart,
       setSelectedCustomizations(prev => prev.filter(c => c !== customization));
     }
   };
+
 
   const getCustomizationPrice = (name: string) => {
     return customizations.find(c => c.name === name)?.price || 0;
@@ -87,6 +92,29 @@ export const DrinkModal = ({ drink, isOpen, onClose, onUpadeteCart, onAddToCart,
       }, 100);
     }
   };
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const fetchIngridients = async () => {
+      try {
+        const data = await ingredientsAPI.getAll();
+        console.log("Ingridients fetched:", data);
+        setIngredients(data || []); // Garante que será array mesmo se vier undefined
+        console.log("Drinks state updated:", ingredients);
+      } catch (error) {
+        console.error("Failed to fetch drinks:", error);
+        setIngredients([]); // Define como array vazio em caso de erro
+      } 
+    };
+
+    fetchIngridients();
+  }, [isOpen]);
+
+  const customizations = ingredients.map(ingredient => ({
+    name: ingredient.nome,
+    price: ingredient.preco_adicional
+  }));
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>

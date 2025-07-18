@@ -12,6 +12,11 @@ export interface Customization {
   price: number;
 }
 
+export interface Customizations {
+  name: string;
+  price: number;
+}
+
 export interface CartItem {
   drink: Drink;
   quantity: number;
@@ -25,4 +30,10 @@ export interface Order {
   total: number;
   date: string;
   status: string;
+}
+
+export interface Ingredient {
+  id: string;
+  nome: string;
+  preco_adicional: number;
 }

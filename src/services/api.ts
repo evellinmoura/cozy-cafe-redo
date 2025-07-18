@@ -234,7 +234,7 @@ export const productsAPI = {
 
 export const ingredientsAPI = {
   getAll: () =>
-    apiRequest('GET', '/ingredientes', undefined, true),
+    apiRequest('GET', '/decorator', undefined, true),
   
   create: (ingredientData: any) =>
     apiRequest('POST', '/ingredientes', ingredientData, true),
