@@ -125,7 +125,7 @@ export class ApiService {
 
 // Função helper para fazer requisições HTTP
 export const apiRequest = async (
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH',
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE',
   endpoint: string,
   data?: any,
   requireAuth: boolean = true
@@ -140,9 +140,7 @@ export const apiRequest = async (
         return await ApiService.put(endpoint, data, requireAuth);
       case 'DELETE':
         return await ApiService.delete(endpoint, requireAuth);
-      case 'PATCH':
-        return await ApiService.put(endpoint, data, requireAuth); // PATCH é tratado como PUT
-        default:
+      default:
         throw new Error('Unsupported method');
     }
   } catch (error) {
@@ -183,12 +181,7 @@ export const bebidasAPI = {
     apiRequest('GET', `/bebidas/${id}`, undefined, false),
 };
 
-export const statesAPI = {
-  
-}
-// ... (mantenha todo o código existente)
 
-// ... (mantenha o restante do arquivo)
 export const ordersAPI = {
   getAll: () =>
     apiRequest('GET', '/pedido', undefined, true),
@@ -204,16 +197,6 @@ export const ordersAPI = {
   
   delete: (orderId: string) =>
     apiRequest('DELETE', `/pedido/${orderId}`, undefined, true),
-
-  // NOVOS ENDPOINTS ESPECÍFICOS DA IMAGEM
-  advanceStatus: (orderId: string) =>
-    apiRequest('PATCH', `/pedidos/${orderId}/status`, undefined, true),
-
-  cancelOrder: (orderId: string) =>
-    apiRequest('PATCH', `/pedidos/${orderId}`, { status: "cancelled" }, true),
-
-  prepareBeverage: (beverageData: any) =>
-    apiRequest('POST', '/pedidos/bebida/preparar', beverageData, true),
 };
 
 export const clienteAPI = {
