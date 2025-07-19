@@ -10,6 +10,7 @@ import { Drink } from "@/models/Drink";
 import { ingredientsAPI } from "@/services/api";
 import { useEffect } from "react";
 import { Ingredient } from "@/models/Drink";
+import { OrderService } from "@/services/orderService";
 
 
 /*interface Drink {
@@ -85,6 +86,7 @@ export const DrinkModal = ({ drink, isOpen, onClose, onUpadeteCart, onAddToCart,
       customizations: selectedCustomizations,
     };
     console.log("Item to add to cart:", item);
+    OrderService.orderOnCart(drink, selectedCustomizations)
     onAddToCart(item);
     onClose();
     if (shouldReturnToCart) {

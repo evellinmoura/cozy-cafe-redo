@@ -1,5 +1,5 @@
 
-import { Order, CartItem } from '@/models/Drink';
+import { Order, CartItem, Drink, Customizations } from '@/models/Drink';
 import { apiRequest } from './api';
 
 export class OrderService {
@@ -7,6 +7,13 @@ export class OrderService {
     return {
       items,
       total
+    };
+  }
+
+  static createOrderToCart(drink: Drink, customizations: Customizations[]) {
+    return {
+      drink,
+      customizations
     };
   }
 
@@ -20,6 +27,18 @@ export class OrderService {
       throw new Error('Falha ao salvar pedido. Tente novamente.');
     }
   }
+
+  static async orderOnCart(drink: Drink, customizations: Customizations[])  {
+    try {
+      const orderItem = this.createOrderToCart(drink, customizations);
+      console.log("Order item to cart:", orderItem);
+      const response = await apiRequest('POST', '/pedidos/bebida/preparar', orderItem);
+      return response.data;
+    } catch (error) {
+      console.error('Prepare order error:', error);
+      throw new Error('Falha ao salvar item. Tente novamente.');
+    }
+  } 
 
   static async getOrderHistory(): Promise<Order[]> {
     try {

@@ -26,7 +26,8 @@ const OrderStatus = () => {
         { id: "2", item: "Cappuccino", customizations: "Sem açúcar", quantity: 2, status: "Entregue" },
         { id: "3", item: "Latte Macchiato", customizations: "Com canela", quantity: 1, status: "Cancelado" }
     ]);
-// Função para atualizar o status do pedido ao receber mensagem do WebSocket
+
+    // Função para atualizar o status do pedido ao receber mensagem do WebSocket
     const handleWebSocketMessage = useCallback((msg: any) => {
         if (msg.tipo === "atualizacao_pedido") {
             setOrders((prevOrders) =>
