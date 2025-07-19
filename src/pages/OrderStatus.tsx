@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { ShoppingCart, User, History, CircleUserRound, ChevronDown, LogOut, ArrowLeft, List } from "lucide-react";
@@ -6,6 +6,7 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuIte
 import { useAuth } from "@/hooks/useAuth";
 import { Card, CardHeader, CardContent } from "@/components/ui/card";
 import { Table, TableHeader, TableCell, TableHead, TableBody, TableRow } from "@/components/ui/table";
+import { usePedidoWebSocket } from "@/hooks/usePedidoWebSocket"; // "W" maiúsculo
 
 interface Order {
     id: string;
@@ -16,6 +17,7 @@ interface Order {
 }
 
 const OrderStatus = () => {
+    
     const { user, logout } = useAuth();
     const navigate = useNavigate();
 
@@ -24,10 +26,25 @@ const OrderStatus = () => {
         { id: "2", item: "Cappuccino", customizations: "Sem açúcar", quantity: 2, status: "Entregue" },
         { id: "3", item: "Latte Macchiato", customizations: "Com canela", quantity: 1, status: "Cancelado" }
     ]);
+// Função para atualizar o status do pedido ao receber mensagem do WebSocket
+    const handleWebSocketMessage = useCallback((msg: any) => {
+        if (msg.tipo === "atualizacao_pedido") {
+            setOrders((prevOrders) =>
+                prevOrders.map((order) =>
+                    order.id === String(msg.id_pedido)
+                        ? { ...order, status: msg.status }
+                        : order
+                )
+            );
+        }
+    }, []);
+
+    // Conecta ao WebSocket usando o id do usuário logado
+    usePedidoWebSocket(user?.id ?? 1, handleWebSocketMessage);
 
     const handleLogout = () => {
-    logout();
-    window.location.reload();
+        logout();
+        window.location.reload();
     };
 
     return (
@@ -56,7 +73,7 @@ const OrderStatus = () => {
                             <DropdownMenuTrigger>
                                 <Button className="hover:bg-[#e2ce87] rounded-full bg-[#d7dfaf] text-[#754416]">
                                 <User className="h-4 w-4 mr-2" />
-                                Olá, usuário 💛
+                                Olá, {user?.nome || 'Usuário'} 💛
                                 <ChevronDown className="ml-2 h-4 w-4" />
                                 </Button>
                             </DropdownMenuTrigger>

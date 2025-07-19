@@ -13,7 +13,7 @@ export class OrderService {
   static async saveOrder(items: CartItem[], total: number): Promise<Order> {
     try {
       const orderData = this.createOrderData(items, total);
-      const response = await apiRequest('POST', '/pedidos', orderData);
+      const response = await apiRequest('POST', '/pedidos/criar', orderData);
       return response.data;
     } catch (error) {
       console.error('Save order error:', error);
