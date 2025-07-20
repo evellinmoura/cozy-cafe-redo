@@ -10,12 +10,15 @@ export class OrderService {
     };
   }
 
-  static createOrderToCart(id: number, drink: Drink, customizations: Customizations[]) {
-    const response = [
+  static createOrderToCart(id: number, drink: Drink, customizations?: Customizations[]) {
+    if (customizations) {
+      const response = [
       id,
       drink.nome,
       customizations.map(({ id }) => id)
     ]
+    }
+    const response = [id, drink.nome]
     return response;
   }
 
