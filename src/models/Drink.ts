@@ -8,11 +8,13 @@ export interface Drink {
 }
 
 export interface Customization {
+  id: number;
   name: string;
   price: number;
 }
 
 export interface Customizations {
+  id: number;
   name: string;
   price: number;
 }

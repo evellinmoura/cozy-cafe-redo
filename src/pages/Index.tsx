@@ -85,7 +85,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-[#fff9f3]">
       {/* Desktop header */}
-      <header className="hidden lg:block bg-[#fff8e0]">
+      <header className="hidden md:block bg-[#fff8e0]">
         <div className="max-w-6xl mx-auto px-2 sm:px-4 py-2 flex justify-between items-center">
           <div className="logo-colorido flex items-center gap-3">
             <img 
@@ -157,7 +157,7 @@ const Index = () => {
       </header>
 
       {/* Mobile Header */}
-      <header className="block lg:hidden bg-[#fff8e0]">
+      <header className="block md:hidden bg-[#fff8e0]">
         <div className="w-full py-2 flex align-center justify-evenly items-center">
           <div>
             <img 
@@ -331,13 +331,14 @@ const Index = () => {
       {/* Modals */}
       {selectedDrink && (
         <DrinkModal
+          user={user}
           drink={selectedDrink}
           isOpen={!!selectedDrink}
           onClose={() => {
             setSelectedDrink(null);
             setEditingItemIndex(null);
           }}
-          onUpadeteCart={updateCart}
+          onUpdateCart={updateCart}
           onAddToCart={handleAddToCart}
           initialCustomizations={initialCustomizations}
           initialQuantity={initialQuantity}

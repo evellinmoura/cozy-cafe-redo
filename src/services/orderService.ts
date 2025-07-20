@@ -10,11 +10,13 @@ export class OrderService {
     };
   }
 
-  static createOrderToCart(drink: Drink, customizations: Customizations[]) {
-    return {
-      drink,
-      customizations
-    };
+  static createOrderToCart(id: number, drink: Drink, customizations: Customizations[]) {
+    const response = [
+      id,
+      drink.nome,
+      customizations.map(({ id }) => id)
+    ]
+    return response;
   }
 
   static async saveOrder(items: CartItem[], total: number): Promise<Order> {
@@ -28,9 +30,9 @@ export class OrderService {
     }
   }
 
-  static async orderOnCart(drink: Drink, customizations: Customizations[])  {
+  static async orderOnCart(id: number, drink: Drink, customizations: Customizations[])  {
     try {
-      const orderItem = this.createOrderToCart(drink, customizations);
+      const orderItem = this.createOrderToCart(id, drink, customizations);
       console.log("Order item to cart:", orderItem);
       const response = await apiRequest('POST', '/pedidos/bebida/preparar', orderItem);
       return response.data;

@@ -22,6 +22,7 @@ import { OrderService } from "@/services/orderService";
 }*/
 
 interface Customizations {
+  id: number,
   name: string;
   price: number;
 }
@@ -34,10 +35,11 @@ interface CartItem {
 }
 
 interface DrinkModalProps {
+  user: any;
   drink: any;
   isOpen: boolean;
   onClose: () => void;
-  onUpadeteCart: any;
+  onUpdateCart: any;
   onAddToCart: any;
   initialCustomizations?: Customizations[];
   initialQuantity?: number;
@@ -51,7 +53,7 @@ interface DrinkModalProps {
   { name: "Chocolate ( para polvilhar )", price: 2.00 }
 ];*/
 
-export const DrinkModal = ({ drink, isOpen, onClose, onUpadeteCart, onAddToCart, initialCustomizations, initialQuantity, shouldReturnToCart }: DrinkModalProps) => {
+export const DrinkModal = ({ user ,drink, isOpen, onClose, onUpdateCart, onAddToCart, initialCustomizations, initialQuantity, shouldReturnToCart }: DrinkModalProps) => {
   const [selectedCustomizations, setSelectedCustomizations] = useState<Customizations[]>(initialCustomizations || []);
   const [quantity, setQuantity] = useState<number>(initialQuantity || 1);
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
@@ -86,7 +88,7 @@ export const DrinkModal = ({ drink, isOpen, onClose, onUpadeteCart, onAddToCart,
       customizations: selectedCustomizations,
     };
     console.log("Item to add to cart:", item);
-    OrderService.orderOnCart(drink, selectedCustomizations)
+    OrderService.orderOnCart(user.id, drink, selectedCustomizations)
     onAddToCart(item);
     onClose();
     if (shouldReturnToCart) {
@@ -115,6 +117,7 @@ export const DrinkModal = ({ drink, isOpen, onClose, onUpadeteCart, onAddToCart,
   }, [isOpen]);
 
   const customizations = ingredients.map(ingredient => ({
+    id: Number(ingredient.id),
     name: ingredient.nome,
     price: ingredient.preco_adicional
   }));
@@ -180,7 +183,7 @@ export const DrinkModal = ({ drink, isOpen, onClose, onUpadeteCart, onAddToCart,
             Subtotal: R$ {getTotalPrice()}
           </div>
 
-          <div className="flex md:flex-col md:flex-row items-center justify-between gap-4">
+          <div className="flex md:flex-row items-center justify-between gap-10 md:gap-4">
             {/* Quantidade */}
             <div className="flex items-center rounded-full bg-[#f8e0b3] px-2">
               <Button
