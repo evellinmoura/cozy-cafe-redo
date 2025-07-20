@@ -7,29 +7,31 @@ import { Label } from "@/components/ui/label";
 import { CreditCard, Smartphone, DollarSign, Gift } from "lucide-react";
 import { DiscountStrategy, PixDiscountStrategy, DebitCardDiscountStrategy, VoucherDiscountStrategy, NoDiscountStrategy } from "@/patterns/discountStrategies";
 import { DiscountContext } from "@/patterns/discountContext";
+import { OrderService } from "@/services/orderService";
 
 interface PaymentModalProps {
   isOpen: boolean;
   onClose: () => void;
   total: number;
   onPaymentComplete: () => void;
+  user: any;
 }
 
 const paymentMethods = [
-  { id: "pix", name: "Pix", icon: Smartphone, discount: "5% de desconto" },
-  { id: "credit", name: "Cartão de crédito", icon: CreditCard },
-  { id: "debitCard", name: "Cartão de débito", icon: CreditCard, discount: "" },
-  { id: "voucher", name: "Fidelidade", icon: Gift, discount: "10% de desconto" }
+  { id: "Pix", name: "Pix", icon: Smartphone, discount: "5% de desconto" },
+  { id: "Credit", name: "Cartão de crédito", icon: CreditCard },
+  { id: "DebitCard", name: "Cartão de débito", icon: CreditCard, discount: "" },
+  { id: "Voucher", name: "Fidelidade", icon: Gift, discount: "10% de desconto" }
 ];
 
-export const PaymentModal = ({ isOpen, onClose, total, onPaymentComplete }: PaymentModalProps) => {
-  const [selectedMethod, setSelectedMethod] = useState("pix");
+export const PaymentModal = ({ isOpen, onClose, total, onPaymentComplete, user }: PaymentModalProps) => {
+  const [selectedMethod, setSelectedMethod] = useState("Pix");
 
   const discountStrategiesMap: { [key: string]: DiscountStrategy } = useMemo(() => ({
-    pix: new PixDiscountStrategy(),
-    credit: new NoDiscountStrategy(),
-    debitCard: new DebitCardDiscountStrategy(),
-    voucher: new VoucherDiscountStrategy()
+    Pix: new PixDiscountStrategy(),
+    Credit: new NoDiscountStrategy(),
+    DebitCard: new DebitCardDiscountStrategy(),
+    Voucher: new VoucherDiscountStrategy()
   }), []);
 
   const discountContext = useMemo(() => new DiscountContext(new NoDiscountStrategy), []);
@@ -42,6 +44,7 @@ export const PaymentModal = ({ isOpen, onClose, total, onPaymentComplete }: Paym
 
   const handlePayment = () => {
     // Simular processamento do pagamento
+    OrderService.createOrder(user.id, selectedMethod)
     setTimeout(() => {
       onPaymentComplete();
       onClose();

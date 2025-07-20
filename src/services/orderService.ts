@@ -64,4 +64,19 @@ export class OrderService {
       }
     }
   }
+
+  static async createOrder(id: number, pagamento: string) {
+    try {
+      const orderData = {
+        cliente_id: id,
+        forma_pagamento: pagamento
+      };
+      console.log("Creating order with data:", orderData);
+      const response = await apiRequest('POST', '/pedidos/criar', orderData);
+      return response.data;
+    } catch (error) {
+      console.error('Create order error:', error);
+      throw new Error('Falha ao criar pedido. Tente novamente.');
+    }
+  }
 }

@@ -213,6 +213,7 @@ export const Cart = ({ items, isOpen, onClose, onUpdateCart, onEditItem }: CartP
         onClose={() => setShowPayment(false)}
         total={getCurrentTotal()}
         onPaymentComplete={handlePaymentComplete}
+        user={user}
       />
     </>
   );
