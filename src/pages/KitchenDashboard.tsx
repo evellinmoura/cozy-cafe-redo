@@ -4,21 +4,23 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Clock, CheckCircle, XCircle, Coffee } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { OrderService } from "@/services/orderService";
 
-interface LiveOrder {
-  id: string;
-  customerName: string;
-  items: string[];
-  status: "pending" | "preparing" | "ready" | "delivered";
-  orderTime: string;
-  estimatedTime: number;
+interface Order {
+  id: number;
+  status: string;
+  valor_total: number;
+  forma_pagamento: string;
+  desconto: number;
+  data_hora: string;
+  cliente_id: number;
 }
 
 const KitchenDashboard = () => {
   const navigate = useNavigate();
   const [currentTime, setCurrentTime] = useState(new Date());
 
-  const [liveOrders, setLiveOrders] = useState<LiveOrder[]>([
+  /*const [liveOrders, setLiveOrders] = useState<LiveOrder[]>([
     {
       id: "ORD001",
       customerName: "João Silva",
@@ -43,9 +45,12 @@ const KitchenDashboard = () => {
       orderTime: "14:25",
       estimatedTime: 0
     }
-  ]);
+  ]);*/
+
+  const [liveOrders, setLiveOrders] = useState<Order[]>([]);
 
   useEffect(() => {
+    fetchOrders();
     const timer = setInterval(() => {
       setCurrentTime(new Date());
     }, 1000);
@@ -53,7 +58,7 @@ const KitchenDashboard = () => {
     return () => clearInterval(timer);
   }, []);
 
-  const updateOrderStatus = (orderId: string, newStatus: LiveOrder["status"]) => {
+  const updateOrderStatus = (orderId: number, newStatus: Order["status"]) => {
     setLiveOrders(orders =>
       orders.map(order =>
         order.id === orderId
@@ -61,9 +66,19 @@ const KitchenDashboard = () => {
           : order
       )
     );
+  };  
+
+  const fetchOrders = async () => {
+    try {
+      const fetchedOrders = await OrderService.getOrderHistory();
+      const filteredOrders = (fetchedOrders || []).filter(order => order.status !== "Cancelado");
+      setLiveOrders(filteredOrders);
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+    }
   };
 
-  const getStatusColor = (status: LiveOrder["status"]) => {
+  const getStatusColor = (status: Order["status"]) => {
     switch (status) {
       case "pending":
         return "bg-yellow-100 border-yellow-300 text-yellow-800";
@@ -78,7 +93,7 @@ const KitchenDashboard = () => {
     }
   };
 
-  const getStatusIcon = (status: LiveOrder["status"]) => {
+  const getStatusIcon = (status: Order["status"]) => {
     switch (status) {
       case "pending":
         return <Clock className="h-5 w-5" />;
@@ -93,7 +108,7 @@ const KitchenDashboard = () => {
     }
   };
 
-  const getStatusText = (status: LiveOrder["status"]) => {
+  const getStatusText = (status: Order["status"]) => {
     switch (status) {
       case "pending":
         return "Aguardando";
@@ -108,9 +123,9 @@ const KitchenDashboard = () => {
     }
   };
 
-  const pendingOrders = liveOrders.filter(order => order.status === "pending");
-  const preparingOrders = liveOrders.filter(order => order.status === "preparing");
-  const readyOrders = liveOrders.filter(order => order.status === "ready");
+  const recebidoOrders = liveOrders.filter(order => order.status === "Recebido");
+  const preparandoOrders = liveOrders.filter(order => order.status === "Em preparo");
+  const prontoOrders = liveOrders.filter(order => order.status === "Pronto");
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 to-orange-100 p-4">
@@ -148,8 +163,8 @@ const KitchenDashboard = () => {
               <div className="flex items-center gap-2">
                 <Clock className="h-8 w-8 text-yellow-600" />
                 <div>
-                  <p className="text-2xl font-bold text-yellow-800">{pendingOrders.length}</p>
-                  <p className="text-sm text-yellow-600">Aguardando</p>
+                  <p className="text-2xl font-bold text-yellow-800">{recebidoOrders.length}</p>
+                  <p className="text-sm text-yellow-600">Recebido</p>
                 </div>
               </div>
             </CardContent>
@@ -159,7 +174,7 @@ const KitchenDashboard = () => {
               <div className="flex items-center gap-2">
                 <Coffee className="h-8 w-8 text-blue-600" />
                 <div>
-                  <p className="text-2xl font-bold text-blue-800">{preparingOrders.length}</p>
+                  <p className="text-2xl font-bold text-blue-800">{preparandoOrders.length}</p>
                   <p className="text-sm text-blue-600">Preparando</p>
                 </div>
               </div>
@@ -170,7 +185,7 @@ const KitchenDashboard = () => {
               <div className="flex items-center gap-2">
                 <CheckCircle className="h-8 w-8 text-green-600" />
                 <div>
-                  <p className="text-2xl font-bold text-green-800">{readyOrders.length}</p>
+                  <p className="text-2xl font-bold text-green-800">{prontoOrders.length}</p>
                   <p className="text-sm text-green-600">Prontos</p>
                 </div>
               </div>
@@ -190,29 +205,29 @@ const KitchenDashboard = () => {
         </div>
 
         {/* Live Orders */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Pending Orders */}
           <Card>
             <CardHeader>
               <CardTitle className="text-xl text-yellow-800 flex items-center gap-2">
                 <Clock className="h-6 w-6" />
-                Aguardando ({pendingOrders.length})
+                Recebido ({recebidoOrders.length})
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {pendingOrders.map((order) => (
+              {recebidoOrders.map((order) => (
                 <div
                   key={order.id}
                   className={`p-4 rounded-lg border-2 ${getStatusColor(order.status)}`}
                 >
                   <div className="flex justify-between items-start mb-2">
-                    <h3 className="font-bold">{order.customerName}</h3>
-                    <span className="text-sm">{order.orderTime}</span>
+                    <h3 className="font-bold">{order.cliente_id}</h3>
+                    <span className="text-sm">{order.data_hora}</span>
                   </div>
                   <div className="space-y-1 mb-3">
-                    {order.items.map((item, index) => (
+                    {/*{order.items.map((item, index) => (
                       <p key={index} className="text-sm">• {item}</p>
-                    ))}
+                    ))}*/}
                   </div>
                   <Button
                     size="sm"
@@ -231,26 +246,25 @@ const KitchenDashboard = () => {
             <CardHeader>
               <CardTitle className="text-xl text-blue-800 flex items-center gap-2">
                 <Coffee className="h-6 w-6" />
-                Preparando ({preparingOrders.length})
+                Preparando ({preparandoOrders.length})
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {preparingOrders.map((order) => (
+              {preparandoOrders.map((order) => (
                 <div
                   key={order.id}
                   className={`p-4 rounded-lg border-2 ${getStatusColor(order.status)}`}
                 >
                   <div className="flex justify-between items-start mb-2">
-                    <h3 className="font-bold">{order.customerName}</h3>
-                    <span className="text-sm">{order.orderTime}</span>
+                    <h3 className="font-bold">{order.cliente_id}</h3>
+                    <span className="text-sm">{order.data_hora}</span>
                   </div>
                   <div className="space-y-1 mb-3">
-                    {order.items.map((item, index) => (
+                    {/*{order.items.map((item, index) => (
                       <p key={index} className="text-sm">• {item}</p>
-                    ))}
+                    ))}*/}
                   </div>
                   <div className="text-sm mb-3">
-                    ⏱️ Tempo estimado: {order.estimatedTime} min
                   </div>
                   <Button
                     size="sm"
@@ -269,23 +283,23 @@ const KitchenDashboard = () => {
             <CardHeader>
               <CardTitle className="text-xl text-green-800 flex items-center gap-2">
                 <CheckCircle className="h-6 w-6" />
-                Prontos ({readyOrders.length})
+                Prontos ({prontoOrders.length})
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {readyOrders.map((order) => (
+              {prontoOrders.map((order) => (
                 <div
                   key={order.id}
                   className={`p-4 rounded-lg border-2 ${getStatusColor(order.status)}`}
                 >
                   <div className="flex justify-between items-start mb-2">
-                    <h3 className="font-bold">{order.customerName}</h3>
-                    <span className="text-sm">{order.orderTime}</span>
+                    <h3 className="font-bold">{order.cliente_id}</h3>
+                    <span className="text-sm">{order.data_hora}</span>
                   </div>
                   <div className="space-y-1 mb-3">
-                    {order.items.map((item, index) => (
+                    {/*{order.items.map((item, index) => (
                       <p key={index} className="text-sm">• {item}</p>
-                    ))}
+                    ))}*/}
                   </div>
                   <div className="text-sm mb-3 text-green-700 font-medium">
                     ✅ Pronto para entrega!
