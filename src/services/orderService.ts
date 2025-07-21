@@ -49,7 +49,8 @@ export class OrderService {
   static async getOrderHistory(): Promise<Order[]> {
     try {
       const response = await apiRequest('GET', '/pedidos');
-      return response.data;
+      console.log("Order history response:", response.pedidos);
+      return response.pedidos;
     } catch (error) {
       console.error('Get order history error:', error);
       // Fallback para localStorage em caso de erro
