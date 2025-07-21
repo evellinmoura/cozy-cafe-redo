@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useEffect, useCallback, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { ShoppingCart, User, History, CircleUserRound, ChevronDown, LogOut, ArrowLeft, List } from "lucide-react";
@@ -17,15 +17,42 @@ interface Order {
 }
 
 const OrderStatus = () => {
-    
     const { user, logout } = useAuth();
     const navigate = useNavigate();
 
-    const [orders, setOrders] = useState<Order[]>([
-        { id: "1", item: "Café com Leite", customizations: "Leite de amêndoas, Com açúcar", quantity: 1, status: "Em preparação" },
-        { id: "2", item: "Cappuccino", customizations: "Sem açúcar", quantity: 2, status: "Entregue" },
-        { id: "3", item: "Latte Macchiato", customizations: "Com canela", quantity: 1, status: "Cancelado" }
-    ]);
+    const [orders, setOrders] = useState<Order[]>([]);
+
+    // Buscar pedidos do backend ao carregar a página
+    useEffect(() => {
+        const fetchOrders = async () => {
+            try {
+                const response = await fetch(`http://localhost:8000/pedidos/cliente/${user?.id ?? 1}`);
+                const data = await response.json();
+                console.log("Pedidos recebidos do backend:", data);
+
+                // Transforma cada pedido e seus itens em linhas para a tabela
+                const pedidosArray = data.pedidos || [];
+                const pedidos: Order[] = [];
+                pedidosArray.forEach((pedido: any) => {
+                    pedido.itens.forEach((item: any, idx: number) => {
+                        pedidos.push({
+                            id: String(pedido.id) + "-" + idx,
+                            item: item.bebida,
+                            customizations: Array.isArray(item.ingredientes) && item.ingredientes.length > 0
+                                ? item.ingredientes.join(", ")
+                                : "Nenhuma",
+                            quantity: 1, // ajuste se houver campo de quantidade
+                            status: pedido.status
+                        });
+                    });
+                });
+                setOrders(pedidos);
+            } catch (error) {
+                console.error("Erro ao buscar pedidos:", error);
+            }
+        };
+        fetchOrders();
+    }, [user?.id]);
 
     // Função para atualizar o status do pedido ao receber mensagem do WebSocket
     const handleWebSocketMessage = useCallback((msg: any) => {

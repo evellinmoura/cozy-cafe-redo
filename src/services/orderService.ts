@@ -13,7 +13,7 @@ export class OrderService {
     const orderObj = {
       cliente_id: id,
       tipo_bebida: drink.nome,
-      ingredientes: customizations ? customizations.map(({ id }) => id) : []
+      ingredientes: customizations ? customizations.map(({ id }) => id) : [],
     };
     console.log("Objeto enviado para preparar bebida:", orderObj);
     return orderObj;
