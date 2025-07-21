@@ -27,11 +27,13 @@ export interface CartItem {
 }
 
 export interface Order {
-  id: string;
-  items: CartItem[];
-  total: number;
-  date: string;
+  id: number;
   status: string;
+  valor_total: number;
+  forma_pagamento: string;
+  desconto: number;
+  data_hora: string;
+  cliente_id: number;
 }
 
 export interface Ingredient {
