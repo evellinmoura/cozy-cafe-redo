@@ -1,4 +1,3 @@
-
 import { Order, CartItem, Drink, Customizations } from '@/models/Drink';
 import { apiRequest } from './api';
 
@@ -11,18 +10,13 @@ export class OrderService {
   }
 
   static createOrderToCart(id: number, drink: Drink, customizations?: Customizations[]) {
-    if (customizations) {
-      const response = {
-        cliente_id: id,
-        tipo_bebida: drink.nome,
-        ingredientes: customizations.map(({ id }) => id)
-      }
-    }
-    const response = {
+    const orderObj = {
       cliente_id: id,
       tipo_bebida: drink.nome,
-    }
-    return response;
+      ingredientes: customizations ? customizations.map(({ id }) => id) : []
+    };
+    console.log("Objeto enviado para preparar bebida:", orderObj);
+    return orderObj;
   }
 
   static async saveOrder(items: CartItem[], total: number): Promise<Order> {
@@ -41,7 +35,11 @@ export class OrderService {
       const orderItem = this.createOrderToCart(id, drink, customizations);
       console.log("Order item to cart:", orderItem);
       const response = await apiRequest('POST', '/pedidos/bebida/preparar', orderItem);
-      return response.data;
+      console.log("Resposta do backend /pedidos/bebida/preparar:", response);
+      if (!response) {
+        throw new Error('Falha ao preparar bebida. Resposta vazia do backend.');
+      }
+      return response;
     } catch (error) {
       console.error('Prepare order error:', error);
       throw new Error('Falha ao salvar item. Tente novamente.');
@@ -73,6 +71,7 @@ export class OrderService {
       };
       console.log("Creating order with data:", orderData);
       const response = await apiRequest('POST', '/pedidos/criar', orderData);
+      console.log("Resposta do backend /pedidos/criar:", response.data);
       return response.data;
     } catch (error) {
       console.error('Create order error:', error);

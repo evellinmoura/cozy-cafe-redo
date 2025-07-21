@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -11,6 +10,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useOrder } from "@/hooks/useOrder";
 import { useCart } from "@/hooks/useCart";
 import { CartItem } from "@/models/Drink";
+import { OrderService } from "@/services/orderService";
 
 interface CartProps {
   items: CartItem[];
@@ -59,13 +59,37 @@ export const Cart = ({ items, isOpen, onClose, onUpdateCart, onEditItem }: CartP
     return items.reduce((total, item) => total + item.totalPrice, 0);
   };
 
-  const handlePaymentComplete = () => {
+  const handlePaymentComplete = async (forma_pagamento?: string) => {
     const total = getCurrentTotal();
-    processOrder(items, total);
-    
-    onUpdateCart([]);
-    setShowPayment(false);
-    navigate("/payment-confirmation");
+    console.log("Iniciando pagamento. Total:", total, "Forma de pagamento:", forma_pagamento);
+
+    try {
+      // Prepara cada bebida no backend
+      for (const item of items) {
+        console.log("Preparando item:", item);
+        const result = await OrderService.orderOnCart(
+          user.id,
+          item.drink,
+          item.customizations
+        );
+        if (!result) {
+          alert("Erro ao preparar bebida. Pedido não será criado.");
+          return;
+        }
+      }
+
+      // Cria o pedido principal
+      console.log("Criando pedido para cliente:", user.id, "com forma de pagamento:", forma_pagamento);
+      const pedidoResult = await OrderService.createOrder(user.id, forma_pagamento || "Dinheiro");
+      console.log("Resultado criação do pedido:", pedidoResult);
+
+      onUpdateCart([]);
+      setShowPayment(false);
+      navigate("/payment-confirmation");
+    } catch (error) {
+      alert("Erro ao finalizar pedido. Tente novamente.");
+      console.error("Erro no pagamento:", error);
+    }
   };
 
   const handleCheckout = () => {
