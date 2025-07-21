@@ -22,50 +22,61 @@ const OrderStatus = () => {
 
     const [orders, setOrders] = useState<Order[]>([]);
 
-    // Buscar pedidos do backend ao carregar a página
-    useEffect(() => {
-        const fetchOrders = async () => {
-            try {
-                const response = await fetch(`http://localhost:8000/pedidos/cliente/${user?.id ?? 1}`);
-                const data = await response.json();
-                console.log("Pedidos recebidos do backend:", data);
+    // Mova fetchOrders para fora do useEffect
+    const fetchOrders = useCallback(async () => {
+        try {
+            const response = await fetch(`http://localhost:8000/pedidos/cliente/${user?.id ?? 1}`);
+            const data = await response.json();
+            console.log("Pedidos recebidos do backend:", data);
 
-                // Transforma cada pedido e seus itens em linhas para a tabela
-                const pedidosArray = data.pedidos || [];
-                const pedidos: Order[] = [];
-                pedidosArray.forEach((pedido: any) => {
-                    pedido.itens.forEach((item: any, idx: number) => {
-                        pedidos.push({
-                            id: String(pedido.id) + "-" + idx,
-                            item: item.bebida,
-                            customizations: Array.isArray(item.ingredientes) && item.ingredientes.length > 0
-                                ? item.ingredientes.join(", ")
-                                : "Nenhuma",
-                            quantity: 1, // ajuste se houver campo de quantidade
-                            status: pedido.status
-                        });
+            // Transforma cada pedido e seus itens em linhas para a tabela
+            const pedidosArray = data.pedidos || [];
+            const pedidos: Order[] = [];
+            pedidosArray.forEach((pedido: any) => {
+                pedido.itens.forEach((item: any, idx: number) => {
+                    pedidos.push({
+                        id: String(pedido.id) + "-" + idx,
+                        item: item.bebida,
+                        customizations: Array.isArray(item.ingredientes) && item.ingredientes.length > 0
+                            ? item.ingredientes.join(", ")
+                            : "Nenhuma",
+                        quantity: 1,
+                        status: pedido.status
                     });
                 });
-                setOrders(pedidos);
-            } catch (error) {
-                console.error("Erro ao buscar pedidos:", error);
-            }
-        };
-        fetchOrders();
+            });
+            setOrders(pedidos);
+        } catch (error) {
+            console.error("Erro ao buscar pedidos:", error);
+        }
     }, [user?.id]);
+
+    // useEffect agora só chama a função
+    useEffect(() => {
+        fetchOrders();
+    }, [fetchOrders]);
 
     // Função para atualizar o status do pedido ao receber mensagem do WebSocket
     const handleWebSocketMessage = useCallback((msg: any) => {
+        console.log("Mensagem WebSocket recebida:", msg);
+        
         if (msg.tipo === "atualizacao_pedido") {
             setOrders((prevOrders) =>
-                prevOrders.map((order) =>
-                    order.id === String(msg.id_pedido)
+                prevOrders.map((order) => {
+                    const pedidoId = order.id.split("-")[0];
+                    return pedidoId === String(msg.id_pedido)
                         ? { ...order, status: msg.status }
-                        : order
-                )
+                        : order;
+                })
             );
         }
-    }, []);
+        
+        // Só recarrega se for realmente um novo pedido (não atualização)
+        if (msg.tipo === "novo_pedido" && msg.status === "Recebido") {
+            console.log("Recarregando lista por novo pedido");
+            fetchOrders();
+        }
+    }, [fetchOrders]);
 
     // Conecta ao WebSocket usando o id do usuário logado
     usePedidoWebSocket(user?.id ?? 1, handleWebSocketMessage);

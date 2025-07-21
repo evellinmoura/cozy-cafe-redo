@@ -184,19 +184,22 @@ export const bebidasAPI = {
 
 export const ordersAPI = {
   getAll: () =>
-    apiRequest('GET', '/pedido', undefined, true),
+    apiRequest('GET', '/pedidos', undefined, true),
+  
+  getByClientId: (clientId: number) =>
+    apiRequest('GET', `/pedidos/cliente/${clientId}`, undefined, true),
   
   create: (orderData: any) =>
-    apiRequest('POST', '/pedido', orderData, true),
+    apiRequest('POST', '/pedidos', orderData, true),
   
   getById: (orderId: string) =>
-    apiRequest('GET', `/pedido/${orderId}`, undefined, true),
-  
+    apiRequest('GET', `/pedidos/${orderId}`, undefined, true),
+
   update: (orderId: string, orderData: any) =>
-    apiRequest('PUT', `/pedido/${orderId}`, orderData, true),
-  
+    apiRequest('PUT', `/pedidos/${orderId}`, orderData, true),
+
   delete: (orderId: string) =>
-    apiRequest('DELETE', `/pedido/${orderId}`, undefined, true),
+    apiRequest('DELETE', `/pedidos/${orderId}`, undefined, true),
 };
 
 export const clienteAPI = {
