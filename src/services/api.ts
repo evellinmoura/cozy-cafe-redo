@@ -121,11 +121,26 @@ export class ApiService {
 
     return await response.json();
   }
+
+  static async patch(endpoint: string, data: any, requireAuth: boolean = true): Promise<any> {
+    const response = await fetch(buildUrl(endpoint), {
+      method: 'PATCH',
+      headers: getHeaders(requireAuth),
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+  }
 }
 
 // Função helper para fazer requisições HTTP
 export const apiRequest = async (
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE',
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH',
   endpoint: string,
   data?: any,
   requireAuth: boolean = true
@@ -140,6 +155,8 @@ export const apiRequest = async (
         return await ApiService.put(endpoint, data, requireAuth);
       case 'DELETE':
         return await ApiService.delete(endpoint, requireAuth);
+      case 'PATCH':
+        return await ApiService.patch(endpoint, data, requireAuth);
       default:
         throw new Error('Unsupported method');
     }

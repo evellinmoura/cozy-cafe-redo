@@ -58,15 +58,14 @@ const KitchenDashboard = () => {
     return () => clearInterval(timer);
   }, []);
 
-  const updateOrderStatus = (orderId: number, newStatus: Order["status"]) => {
-    setLiveOrders(orders =>
-      orders.map(order =>
-        order.id === orderId
-          ? { ...order, status: newStatus }
-          : order
-      )
-    );
-  };  
+  const updateOrderStatus = async (orderId: number) => {
+    try {
+      await OrderService.updateOrderStatus(orderId);
+      fetchOrders();
+    } catch (error) {
+      console.error('Error updating order status:', error);
+    }
+  };
 
   const fetchOrders = async () => {
     try {
@@ -231,7 +230,7 @@ const KitchenDashboard = () => {
                   </div>
                   <Button
                     size="sm"
-                    onClick={() => updateOrderStatus(order.id, "preparing")}
+                    onClick={() => updateOrderStatus(order.id)}
                     className="w-full bg-blue-500 hover:bg-blue-600"
                   >
                     Começar Preparo
@@ -268,7 +267,7 @@ const KitchenDashboard = () => {
                   </div>
                   <Button
                     size="sm"
-                    onClick={() => updateOrderStatus(order.id, "ready")}
+                    onClick={() => updateOrderStatus(order.id)}
                     className="w-full bg-green-500 hover:bg-green-600"
                   >
                     Marcar como Pronto
@@ -306,7 +305,7 @@ const KitchenDashboard = () => {
                   </div>
                   <Button
                     size="sm"
-                    onClick={() => updateOrderStatus(order.id, "delivered")}
+                    onClick={() => updateOrderStatus(order.id)}
                     className="w-full bg-gray-500 hover:bg-gray-600"
                   >
                     Marcar como Entregue

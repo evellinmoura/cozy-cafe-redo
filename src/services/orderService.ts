@@ -79,4 +79,15 @@ export class OrderService {
       throw new Error('Falha ao criar pedido. Tente novamente.');
     }
   }
+
+  static async updateOrderStatus(id: number) {
+    try {
+      const response = await apiRequest('PATCH', `/pedidos/${id}/atualizar`);
+      console.log("Order status updated:", response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Update order status error:', error);
+      throw new Error('Falha ao atualizar status do pedido. Tente novamente.');
+    }
+  }
 }
